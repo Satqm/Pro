@@ -5420,75 +5420,78 @@ function toggleTopicStatus(subjectId, topicName) {
     topic.status = nextStatus;
     
     // If marking as completed, respect user's manual hours input
-    if (nextStatus === 'completed') {
-        // Find topic data from syllabus to get weightage
+  if (nextStatus === 'completed') {
+    // Mark as completed but PRESERVE any existing manual hours
+    Object.keys(topic.subtopics).forEach(subtopicName => {
+        const subtopic = topic.subtopics[subtopicName];
+        
+        // If user hasn't entered any hours (0 or undefined), THEN calculate weightage-based hours
+        if (!subtopic.actualHours || subtopic.actualHours === 0) {
+            // Find topic data from syllabus to get weightage
+            const subjectData = syllabusData[subjectId];
+            const syllabusTopic = subjectData.topics.find(t => t.name === topicName);
+            
+            if (syllabusTopic) {
+                // Calculate topic planned hours based on subject distribution
+                const subjectPlannedHours = userStudyPlan?.subjectHours?.[subjectId] || 0;
+                const topicWeightage = syllabusTopic.weightage;
+                const topicPlannedHours = (topicWeightage / 100) * subjectPlannedHours;
+                
+                // Find subtopic data to get its weight
+                const subtopicData = syllabusTopic.subtopics.find(s => s.name === subtopicName);
+                if (subtopicData) {
+                    const subtopicWeightage = subtopicData.weight;
+                    // Calculate hours: subtopic weight * topic planned hours
+                    subtopic.actualHours = (subtopicWeightage / 100) * topicPlannedHours;
+                } else {
+                    // Fallback: distribute equally
+                    const numSubtopics = Object.keys(topic.subtopics).length;
+                    subtopic.actualHours = topicPlannedHours / numSubtopics;
+                }
+            }
+        }
+        
+        // Mark as completed (regardless of whether hours were auto-calculated or manual)
+        subtopic.completed = true;
+    });
+} else if (nextStatus === 'not-started') {
+    // When marking as not-started, ONLY reset hours that were auto-calculated
+    // NEVER reset manually entered hours
+    Object.keys(topic.subtopics).forEach(subtopicName => {
+        const subtopic = topic.subtopics[subtopicName];
+        
+        // Only reset hours if they appear to be auto-calculated
+        // Check if hours match a weightage-based calculation (within 5% tolerance)
+        let shouldReset = true;
+        
         const subjectData = syllabusData[subjectId];
         const syllabusTopic = subjectData.topics.find(t => t.name === topicName);
         
-        if (syllabusTopic) {
-            // Calculate topic planned hours based on subject distribution
+        if (syllabusTopic && subtopic.actualHours > 0) {
             const subjectPlannedHours = userStudyPlan?.subjectHours?.[subjectId] || 0;
             const topicWeightage = syllabusTopic.weightage;
             const topicPlannedHours = (topicWeightage / 100) * subjectPlannedHours;
             
-            Object.keys(topic.subtopics).forEach(subtopicName => {
-                const subtopic = topic.subtopics[subtopicName];
+            const subtopicData = syllabusTopic.subtopics.find(s => s.name === subtopicName);
+            if (subtopicData) {
+                const expectedHours = (subtopicData.weight / 100) * topicPlannedHours;
+                const tolerance = expectedHours * 0.05; // 5% tolerance
                 
-                // IMPORTANT: Only auto-calculate hours if user hasn't entered ANY hours
-                // (actualHours is 0 or doesn't exist)
-                if (!subtopic.actualHours || subtopic.actualHours === 0) {
-                    // Find subtopic data to get its weight
-                    const subtopicData = syllabusTopic.subtopics.find(s => s.name === subtopicName);
-                    if (subtopicData) {
-                        const subtopicWeightage = subtopicData.weight;
-                        // Calculate hours: subtopic weight * topic planned hours
-                        subtopic.actualHours = (subtopicWeightage / 100) * topicPlannedHours;
-                    } else {
-                        // Fallback: distribute equally
-                        const numSubtopics = Object.keys(topic.subtopics).length;
-                        subtopic.actualHours = topicPlannedHours / numSubtopics;
-                    }
-                    subtopic.completed = true;
-                } else {
-                    // User has manually entered hours - mark as completed but keep their hours
-                    subtopic.completed = true;
-                }
-            });
-        } else {
-            // If syllabus topic not found, just mark subtopics as completed
-            Object.keys(topic.subtopics).forEach(subtopicName => {
-                topic.subtopics[subtopicName].completed = true;
-            });
-        }
-    } else if (nextStatus === 'not-started') {
-        // Reset hours if going back to not-started, but only for auto-calculated hours
-        // Don't reset user's manual entries
-        Object.keys(topic.subtopics).forEach(subtopicName => {
-            const subtopic = topic.subtopics[subtopicName];
-            
-            // Check if hours were auto-calculated (close to rounded weight-based value)
-            if (syllabusData[subjectId]) {
-                const syllabusTopic = syllabusData[subjectId].topics.find(t => t.name === topicName);
-                if (syllabusTopic) {
-                    const subjectPlannedHours = userStudyPlan?.subjectHours?.[subjectId] || 0;
-                    const topicWeightage = syllabusTopic.weightage;
-                    const topicPlannedHours = (topicWeightage / 100) * subjectPlannedHours;
-                    
-                    const subtopicData = syllabusTopic.subtopics.find(s => s.name === subtopicName);
-                    if (subtopicData) {
-                        const expectedHours = (subtopicData.weight / 100) * topicPlannedHours;
-                        // If actual hours are within 10% of expected auto-calculated hours, reset them
-                        if (Math.abs(subtopic.actualHours - expectedHours) < (expectedHours * 0.1)) {
-                            subtopic.actualHours = 0;
-                        }
-                    }
+                // If actual hours are close to expected auto-calculated hours, they're likely auto-calculated
+                if (Math.abs(subtopic.actualHours - expectedHours) > tolerance) {
+                    // Hours are NOT close to auto-calculated value - they're likely manual
+                    shouldReset = false;
                 }
             }
-            
-            subtopic.completed = false;
-        });
-    }
-    
+        }
+        
+        if (shouldReset) {
+            subtopic.actualHours = 0;
+        }
+        subtopic.completed = false;
+    });
+}
+
     // Update completed topics count
     updateCompletedTopics(subjectId);
     
@@ -5552,11 +5555,10 @@ function saveAllProgress() {
             // Update hours
             userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = hours;
             
-            // Mark as manual entry if user changed from auto-calculated value
-            if (hours !== prevHours) {
-                userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].manualEntry = true;
-                manualEntries++;
-            }
+      // Also mark as manual entry if hours were just entered (prevHours was 0)
+if (prevHours === 0 && hours > 0) {
+    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].manualEntry = true;
+}
             
             // Auto-mark as completed if hours > 0
             userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = hours > 0;
@@ -6528,6 +6530,7 @@ function saveAllProgress() {
     </script>
 </body>
 </html>
+
 
 
 
