@@ -1,87 +1,41 @@
-I understand the issue. When you manually enter hours for a topic/subtopic, but then mark it as "Completed", the system is overwriting your manual hours with weightage-based calculations. I'll provide the fix with clear instructions.
+Looking at the code, I can identify the main issues and provide fixes. The problems are in the toggleTopicStatus function and saveAllProgress function.
 
-Step-by-Step Fix Instructions:
+PROBLEM 1: In toggleTopicStatus function (Lines ~2510-2610)
 
-Step 1: Find and Delete the OLD Code in toggleTopicStatus function
+When you mark a topic as "completed", it overwrites your manual hours with weightage-based hours.
 
-1. Look for this exact code block (around line 1820-1890 in your file):
+FIX:
+
+Find this block in toggleTopicStatus function:
 
 ```javascript
 if (nextStatus === 'completed') {
-    // Find topic data from syllabus to get weightage
-    const subjectData = syllabusData[subjectId];
-    const syllabusTopic = subjectData.topics.find(t => t.name === topicName);
-    
-    if (syllabusTopic) {
-        // Calculate topic planned hours based on subject distribution
-        const subjectPlannedHours = userStudyPlan?.subjectHours?.[subjectId] || 0;
-        const topicWeightage = syllabusTopic.weightage;
-        const topicPlannedHours = (topicWeightage / 100) * subjectPlannedHours;
-        
-        Object.keys(topic.subtopics).forEach(subtopicName => {
-            const subtopic = topic.subtopics[subtopicName];
-            
-            // IMPORTANT: Only auto-calculate hours if user hasn't entered ANY hours
-            // (actualHours is 0 or doesn't exist)
-            if (!subtopic.actualHours || subtopic.actualHours === 0) {
-                // Find subtopic data to get its weight
-                const subtopicData = syllabusTopic.subtopics.find(s => s.name === subtopicName);
-                if (subtopicData) {
-                    const subtopicWeightage = subtopicData.weight;
-                    // Calculate hours: subtopic weight * topic planned hours
-                    subtopic.actualHours = (subtopicWeightage / 100) * topicPlannedHours;
-                } else {
-                    // Fallback: distribute equally
-                    const numSubtopics = Object.keys(topic.subtopics).length;
-                    subtopic.actualHours = topicPlannedHours / numSubtopics;
-                }
-                subtopic.completed = true;
-            } else {
-                // User has manually entered hours - mark as completed but keep their hours
-                subtopic.completed = true;
-            }
-        });
-    } else {
-        // If syllabus topic not found, just mark subtopics as completed
-        Object.keys(topic.subtopics).forEach(subtopicName => {
-            topic.subtopics[subtopicName].completed = true;
-        });
-    }
-} else if (nextStatus === 'not-started') {
-    // Reset hours if going back to not-started, but only for auto-calculated hours
-    // Don't reset user's manual entries
+    // Mark all subtopics as completed with calculated hours
     Object.keys(topic.subtopics).forEach(subtopicName => {
         const subtopic = topic.subtopics[subtopicName];
         
-        // Check if hours were auto-calculated (close to rounded weight-based value)
-        if (syllabusData[subjectId]) {
-            const syllabusTopic = syllabusData[subjectId].topics.find(t => t.name === topicName);
-            if (syllabusTopic) {
-                const subjectPlannedHours = userStudyPlan?.subjectHours?.[subjectId] || 0;
-                const topicWeightage = syllabusTopic.weightage;
-                const topicPlannedHours = (topicWeightage / 100) * subjectPlannedHours;
-                
-                const subtopicData = syllabusTopic.subtopics.find(s => s.name === subtopicName);
-                if (subtopicData) {
-                    const expectedHours = (subtopicData.weight / 100) * topicPlannedHours;
-                    // If actual hours are within 10% of expected auto-calculated hours, reset them
-                    if (Math.abs(subtopic.actualHours - expectedHours) < (expectedHours * 0.1)) {
-                        subtopic.actualHours = 0;
-                    }
-                }
+        // Calculate weightage-based hours
+        const subjectData = syllabusData[subjectId];
+        const syllabusTopic = subjectData.topics.find(t => t.name === topicName);
+        
+        if (syllabusTopic) {
+            const subjectPlannedHours = userStudyPlan?.subjectHours?.[subjectId] || 0;
+            const topicWeightage = syllabusTopic.weightage;
+            const topicPlannedHours = (topicWeightage / 100) * subjectPlannedHours;
+            
+            const subtopicData = syllabusTopic.subtopics.find(s => s.name === subtopicName);
+            if (subtopicData) {
+                const subtopicWeightage = subtopicData.weight;
+                subtopic.actualHours = (subtopicWeightage / 100) * topicPlannedHours;
             }
         }
         
-        subtopic.completed = false;
+        subtopic.completed = true;
     });
 }
 ```
 
-1. DELETE this entire code block.
-
-Step 2: Paste the NEW Fixed Code
-
-Replace the deleted section with this NEW code:
+REPLACE with this corrected version:
 
 ```javascript
 if (nextStatus === 'completed') {
@@ -89,7 +43,7 @@ if (nextStatus === 'completed') {
     Object.keys(topic.subtopics).forEach(subtopicName => {
         const subtopic = topic.subtopics[subtopicName];
         
-        // If user hasn't entered any hours (0 or undefined), THEN calculate weightage-based hours
+        // ONLY calculate weightage hours if user hasn't entered any hours (0 or undefined)
         if (!subtopic.actualHours || subtopic.actualHours === 0) {
             // Find topic data from syllabus to get weightage
             const subjectData = syllabusData[subjectId];
@@ -118,38 +72,116 @@ if (nextStatus === 'completed') {
         // Mark as completed (regardless of whether hours were auto-calculated or manual)
         subtopic.completed = true;
     });
+}
+```
+
+PROBLEM 2: In saveAllProgress function (Lines ~2570-2620)
+
+Need to track manual entries and never overwrite them.
+
+FIX:
+
+Find this block in saveAllProgress function:
+
+```javascript
+if (hours >= 0) {
+    // Ensure progress structure exists
+    if (!userProgress.subjects[subjectId]) {
+        userProgress.subjects[subjectId] = { topics: {}, completedTopics: 0, totalTopics: syllabusData[subjectId].topics.length };
+    }
+    if (!userProgress.subjects[subjectId].topics[topicName]) {
+        userProgress.subjects[subjectId].topics[topicName] = { status: 'not-started', subtopics: {} };
+    }
+    if (!userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName]) {
+        userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName] = { 
+            actualHours: 0, 
+            completed: false
+        };
+    }
+    
+    // Update hours
+    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = hours;
+    
+    // Auto-mark as completed if hours > 0
+    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = hours > 0;
+    
+    // Auto-mark topic as in-progress if hours added
+    if (hours > 0 && userProgress.subjects[subjectId].topics[topicName].status === 'not-started') {
+        userProgress.subjects[subjectId].topics[topicName].status = 'inprogress';
+    }
+    
+    savedCount++;
+}
+```
+
+REPLACE with this corrected version:
+
+```javascript
+if (hours >= 0) {
+    // Ensure progress structure exists
+    if (!userProgress.subjects[subjectId]) {
+        userProgress.subjects[subjectId] = { topics: {}, completedTopics: 0, totalTopics: syllabusData[subjectId].topics.length };
+    }
+    if (!userProgress.subjects[subjectId].topics[topicName]) {
+        userProgress.subjects[subjectId].topics[topicName] = { status: 'not-started', subtopics: {} };
+    }
+    if (!userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName]) {
+        userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName] = { 
+            actualHours: 0, 
+            completed: false,
+            manualEntry: false  // Track if this was manually entered
+        };
+    }
+    
+    // Get previous hours to detect changes
+    const prevHours = userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours || 0;
+    
+    // Update hours
+    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = hours;
+    
+    // Mark as manual entry if user entered/changed hours (and it's different from weightage-based)
+    if (hours !== prevHours) {
+        userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].manualEntry = true;
+    }
+    
+    // Auto-mark as completed if hours > 0
+    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = hours > 0;
+    
+    // Auto-mark topic as in-progress if hours added
+    if (hours > 0 && userProgress.subjects[subjectId].topics[topicName].status === 'not-started') {
+        userProgress.subjects[subjectId].topics[topicName].status = 'inprogress';
+    }
+    
+    savedCount++;
+}
+```
+
+PROBLEM 3: Need to update the "not-started" case too
+
+Find this block in toggleTopicStatus function:
+
+```javascript
+} else if (nextStatus === 'not-started') {
+    // Reset hours and completion
+    Object.keys(topic.subtopics).forEach(subtopicName => {
+        const subtopic = topic.subtopics[subtopicName];
+        subtopic.actualHours = 0;
+        subtopic.completed = false;
+    });
+}
+```
+
+REPLACE with:
+
+```javascript
 } else if (nextStatus === 'not-started') {
     // When marking as not-started, ONLY reset hours that were auto-calculated
     // NEVER reset manually entered hours
     Object.keys(topic.subtopics).forEach(subtopicName => {
         const subtopic = topic.subtopics[subtopicName];
         
-        // Only reset hours if they appear to be auto-calculated
-        // Check if hours match a weightage-based calculation (within 5% tolerance)
-        let shouldReset = true;
-        
-        const subjectData = syllabusData[subjectId];
-        const syllabusTopic = subjectData.topics.find(t => t.name === topicName);
-        
-        if (syllabusTopic && subtopic.actualHours > 0) {
-            const subjectPlannedHours = userStudyPlan?.subjectHours?.[subjectId] || 0;
-            const topicWeightage = syllabusTopic.weightage;
-            const topicPlannedHours = (topicWeightage / 100) * subjectPlannedHours;
-            
-            const subtopicData = syllabusTopic.subtopics.find(s => s.name === subtopicName);
-            if (subtopicData) {
-                const expectedHours = (subtopicData.weight / 100) * topicPlannedHours;
-                const tolerance = expectedHours * 0.05; // 5% tolerance
-                
-                // If actual hours are close to expected auto-calculated hours, they're likely auto-calculated
-                if (Math.abs(subtopic.actualHours - expectedHours) > tolerance) {
-                    // Hours are NOT close to auto-calculated value - they're likely manual
-                    shouldReset = false;
-                }
-            }
-        }
-        
-        if (shouldReset) {
+        // Only reset hours if they were NOT manually entered
+        if (!subtopic.manualEntry) {
             subtopic.actualHours = 0;
         }
         subtopic.completed = false;
@@ -157,43 +189,16 @@ if (nextStatus === 'completed') {
 }
 ```
 
-Step 3: Update the saveAllProgress function (Optional but Recommended)
+SUMMARY OF CHANGES:
 
-For even better manual hour tracking, find this part in saveAllProgress (around line 1900):
+1. In toggleTopicStatus function - Only calculate weightage hours if user hasn't entered any hours (0 or undefined)
+2. In saveAllProgress function - Track manual entries with a manualEntry flag
+3. In both functions - Never overwrite manually entered hours
+4. When marking "not-started" - Only reset auto-calculated hours, keep manual hours
 
-Look for this code:
+These changes ensure:
 
-```javascript
-// Mark as manual entry if user changed from auto-calculated value
-if (hours !== prevHours) {
-    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].manualEntry = true;
-    manualEntries++;
-}
-```
-
-Add this line RIGHT AFTER the code above:
-
-```javascript
-// Also mark as manual entry if hours were just entered (prevHours was 0)
-if (prevHours === 0 && hours > 0) {
-    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].manualEntry = true;
-}
-```
-
-What This Fix Does:
-
-1. Priority to Manual Hours: When you mark a topic as "Completed", it will ONLY auto-calculate hours if you haven't entered ANY hours (0 or undefined).
-2. Preserves Your Input: If you've entered ANY hours (even 0.5), it keeps YOUR manual hours.
-3. Smart Reset: When marking as "Not Started", it only resets auto-calculated hours, not your manual entries.
-4. Better Tracking: Added better tracking of manual vs auto-calculated hours.
-
-How to Test:
-
-1. Go to Subjects page
-2. Enter manual hours for a subtopic (e.g., 3.5 hours)
-3. Click the topic status to mark as "Completed"
-4. Check that your 3.5 hours are preserved (not overwritten)
-5. Mark as "Not Started" → Your 3.5 hours should remain
-6. Mark as "Completed" again → Your 3.5 hours should remain
-
-This fix ensures your manual hour entries are ALWAYS preserved and respected over auto-calculated weightage-based hours.
+· ✅ Manual hours entered by user are ALWAYS preserved
+· ✅ Weightage-based calculation only happens when no manual hours exist
+· ✅ Dashboard shows actual hours (manual or auto-calculated)
+· ✅ No duplicate hours or conflicts between manual and weightage calculations
