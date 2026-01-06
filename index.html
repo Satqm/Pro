@@ -5243,60 +5243,258 @@
                 });
             });
         }
-        // PWA Installation
+
+    </script>
+    <!-- PWA Installation Handler -->
+<script>
+// Global variables
+let deferredPrompt;
+let isAppInstalled = false;
+
+// Check if app is already installed
+if (window.matchMedia('(display-mode: standalone)').matches) {
+  isAppInstalled = true;
+  console.log('App is running in standalone mode');
+}
+
+// Create install button
+function createInstallButton() {
+  const installBtn = document.createElement('button');
+  installBtn.id = 'pwa-install-btn';
+  installBtn.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <i class="fas fa-download" style="font-size: 20px;"></i>
+      <div style="text-align: left;">
+        <div style="font-weight: 700; font-size: 14px;">Install CA Tracker</div>
+        <div style="font-size: 11px; opacity: 0.8;">For offline access & home screen</div>
+      </div>
+      <i class="fas fa-times" style="margin-left: 10px; cursor: pointer;" id="close-install-btn"></i>
+    </div>
+  `;
+  
+  installBtn.style.cssText = `
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    z-index: 10000;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    cursor: pointer;
+    animation: slideInRight 0.5s ease, float 3s ease-in-out infinite;
+    max-width: 300px;
+    border: 2px solid rgba(255,255,255,0.2);
+  `;
+  
+  // Add CSS animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  // Add event listeners
+  installBtn.addEventListener('click', installPWA);
+  
+  document.body.appendChild(installBtn);
+  
+  // Close button functionality
+  document.getElementById('close-install-btn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    installBtn.remove();
+    localStorage.setItem('installPromptDismissed', 'true');
+  });
+  
+  // Auto-dismiss after 30 seconds
+  setTimeout(() => {
+    if (document.getElementById('pwa-install-btn')) {
+      installBtn.remove();
+    }
+  }, 30000);
+}
+
+// Install PWA function
+async function installPWA() {
+  if (!deferredPrompt) {
+    showToast('Installation not available. Please try again later.', 'warning');
+    return;
+  }
+  
+  deferredPrompt.prompt();
+  
+  const { outcome } = await deferredPrompt.userChoice;
+  
+  if (outcome === 'accepted') {
+    console.log('User accepted the install prompt');
+    showToast('App installed successfully! Check your home screen.', 'success');
+    
+    // Remove install button
+    const installBtn = document.getElementById('pwa-install-btn');
+    if (installBtn) installBtn.remove();
+    
+    // Remove install menu item
+    const installMenuItem = document.getElementById('install-app-menu');
+    if (installMenuItem) installMenuItem.style.display = 'none';
+  } else {
+    console.log('User dismissed the install prompt');
+    showToast('Installation cancelled. You can install later from the menu.', 'info');
+  }
+  
+  deferredPrompt = null;
+}
+
+// Before install prompt event
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  console.log('✅ PWA Installation is available');
+  
+  // Show install button after 3 seconds (if not dismissed)
+  if (!localStorage.getItem('installPromptDismissed') && !isAppInstalled) {
+    setTimeout(() => {
+      createInstallButton();
+    }, 3000);
+  }
+});
+
+// App installed event
+window.addEventListener('appinstalled', (evt) => {
+  console.log('🎉 App was installed successfully');
+  isAppInstalled = true;
+  
+  // Remove install button if present
+  const installBtn = document.getElementById('pwa-install-btn');
+  if (installBtn) installBtn.remove();
+  
+  // Show success message
+  showToast('App installed successfully! You can now access it from your home screen.', 'success');
+});
+
+// Service Worker Registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/CA2.O/service-worker.js')
+    // Register service worker
+    navigator.serviceWorker.register('/Pro/service-worker.js')
       .then(registration => {
-        console.log('ServiceWorker registered:', registration);
+        console.log('✅ Service Worker registered with scope:', registration.scope);
         
         // Check for updates
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
-          console.log('ServiceWorker update found:', newWorker);
+          console.log('🔄 Service Worker update found:', newWorker);
           
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('New content available; please refresh.');
-              showToast('App update available! Refresh to update.', 'success');
+              console.log('🔄 New content available; refresh to update.');
+              showToast('App update available! Refresh to get the latest version.', 'success');
             }
           });
         });
       })
       .catch(error => {
-        console.error('ServiceWorker registration failed:', error);
+        console.error('❌ Service Worker registration failed:', error);
       });
   });
 }
 
-// Install prompt
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
+// Check PWA criteria on page load
+function checkPWAInstallable() {
+  const criteria = {
+    hasSW: 'serviceWorker' in navigator,
+    isHTTPS: window.location.protocol === 'https:' || window.location.hostname === 'localhost',
+    hasManifest: document.querySelector('link[rel="manifest"]') !== null,
+    displayMode: window.matchMedia('(display-mode: standalone)').matches
+  };
   
-  // Show install button after 30 seconds
-  setTimeout(() => {
-    if (!localStorage.getItem('installPromptDismissed')) {
-      showToast('Install this app for offline access!', 'success');
-    }
-  }, 30000);
-});
-
-// Install function
-async function installPWA() {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
-    } else {
-      console.log('User dismissed the install prompt');
-    }
-    deferredPrompt = null;
-  }
+  console.log('📱 PWA Installation Status:', {
+    criteria: criteria,
+    isInstallable: criteria.hasSW && criteria.isHTTPS && criteria.hasManifest,
+    currentDisplayMode: criteria.displayMode ? 'standalone' : 'browser'
+  });
+  
+  return criteria.hasSW && criteria.isHTTPS && criteria.hasManifest;
 }
-    </script>
+
+// Run PWA check
+setTimeout(() => {
+  const isInstallable = checkPWAInstallable();
+  if (isInstallable) {
+    console.log('✅ App meets PWA installation criteria');
+  } else {
+    console.warn('⚠️ App does not meet all PWA installation criteria');
+  }
+}, 1000);
+
+// Add install option to user menu
+document.addEventListener('DOMContentLoaded', function() {
+  const userDropdown = document.getElementById('user-dropdown');
+  if (userDropdown) {
+    const installMenuItem = document.createElement('a');
+    installMenuItem.href = '#';
+    installMenuItem.id = 'install-app-menu';
+    installMenuItem.innerHTML = '<i class="fas fa-mobile-alt"></i> Install App';
+    installMenuItem.style.borderTop = '1px solid #eee';
+    installMenuItem.style.marginTop = '10px';
+    installMenuItem.style.paddingTop = '10px';
+    
+    // Insert at the beginning
+    userDropdown.insertBefore(installMenuItem, userDropdown.firstChild);
+    
+    installMenuItem.addEventListener('click', function(e) {
+      e.preventDefault();
+      installPWA();
+    });
+  }
+});
+// Check if running as PWA
+if (window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) {
+  console.log('📱 Running as installed PWA');
+  document.body.classList.add('pwa-mode');
+}
+
+// Helper function to show toast (use your existing function)
+function showToast(message, type) {
+  // Use your existing toast function or implement a simple one
+  const toast = document.getElementById('toast') || (() => {
+    const t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = 'position:fixed;bottom:40px;right:40px;background:white;border-radius:16px;padding:20px;box-shadow:0 20px 40px rgba(0,0,0,0.15);display:flex;align-items:center;gap:20px;z-index:1000;transform:translateX(150%);transition:transform 0.4s ease;border-left:5px solid var(--success);';
+    document.body.appendChild(t);
+    return t;
+  })();
+  
+  toast.innerHTML = `
+    <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}" 
+       style="font-size:28px;color:${type === 'success' ? 'var(--success)' : 'var(--warning)'};"></i>
+    <div>
+      <h4 style="margin:0 0 5px 0;">${type === 'success' ? 'Success!' : 'Info'}</h4>
+      <p style="margin:0;">${message}</p>
+    </div>
+  `;
+  
+  toast.classList.remove('show');
+  setTimeout(() => {
+    toast.classList.add('show');
+  }, 10);
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+</script>
 </body>
 </html>
+
 
