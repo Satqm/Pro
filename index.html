@@ -9,6 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CA Tracker">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/color/96/000000/graduation-cap.png">
+    <style>
     <style>
         * {
             margin: 0;
@@ -1895,6 +1902,7 @@
                             <i class="fas fa-ellipsis-v"></i>
                         </button>
                         <div class="user-dropdown" id="user-dropdown">
+                            <a href="#" id="install-app-btn"><i class="fas fa-mobile-alt"></i> Install App</a>
                             <a href="#" id="export-btn"><i class="fas fa-download"></i> Export Data</a>
                             <a href="#" id="import-btn"><i class="fas fa-upload"></i> Import Data</a>
                             <a href="#" id="delete-entries-btn"><i class="fas fa-trash"></i> Delete Entries</a>
@@ -3189,6 +3197,7 @@ if (window.location.protocol !== 'https:' && window.location.hostname !== 'local
             });
             
             // Data management
+                        document.getElementById('install-app-btn').addEventListener('click', installPWA);
             document.getElementById('export-btn').addEventListener('click', exportUserData);
             document.getElementById('import-btn').addEventListener('click', () => {
                 document.getElementById('import-modal').classList.add('active');
@@ -4259,14 +4268,26 @@ if (window.location.protocol !== 'https:' && window.location.hostname !== 'local
                 });
             });
             
-            document.querySelectorAll('.topic-status').forEach(status => {
+                  document.querySelectorAll('.topic-status').forEach(status => {
                 status.addEventListener('click', function() {
                     const subjectId = this.getAttribute('data-subject');
                     const topicName = this.getAttribute('data-topic');
                     toggleTopicStatus(subjectId, topicName);
                 });
             });
-        }
+            
+            // Add event listeners for save hour buttons
+            document.querySelectorAll('.save-hour-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const subjectId = this.getAttribute('data-subject');
+                    const topicName = this.getAttribute('data-topic');
+                    const subtopicName = this.getAttribute('data-subtopic');
+                    const inputId = `time-${subjectId}-${topicName.replace(/\s+/g, '-')}-${subtopicName.replace(/\s+/g, '-')}`;
+                    const input = document.getElementById(inputId);
+                    const hours = parseFloat(input.value) || 0;
+                    saveSubtopicHour(subjectId, topicName, subtopicName, hours);
+                });
+            });
         // Add instant save for actual hour inputs
 document.querySelectorAll('.actual-time-input input').forEach(input => {
     input.addEventListener('change', function() {
@@ -4404,7 +4425,7 @@ document.querySelectorAll('.actual-time-input input').forEach(input => {
                     const subjectPlannedHours = userStudyPlan?.subjectHours?.[subjectId] || 0;
                     const suggestedHours = (topic.weightage / 100) * (subtopic.weight / 100) * subjectPlannedHours;
                     
-                    html += `<div class="subtopic-item">
+                                html += `<div class="subtopic-item">
                         <div class="subtopic-info">
                             <div class="subtopic-name">${subtopic.name}</div>
                             <div class="subtopic-details">
@@ -4423,9 +4444,16 @@ document.querySelectorAll('.actual-time-input input').forEach(input => {
                                        min="0" 
                                        step="0.5"
                                        placeholder="${suggestedHours.toFixed(1)} suggested"
-                                       style="width: 100px;"
-                                       title="Suggested: ${suggestedHours.toFixed(1)} hours based on weightage">
+                                       style="width: 80px;"
+                                       title="Enter actual hours spent">
                                 <span>hrs</span>
+                                <button class="save-hour-btn" 
+                                        data-subject="${subjectId}" 
+                                        data-topic="${topic.name}" 
+                                        data-subtopic="${subtopic.name}"
+                                        style="padding: 8px 15px; background: var(--secondary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 10px;">
+                                    <i class="fas fa-save"></i> Save
+                                </button>
                             </div>
                         </div>
                     </div>`;
@@ -4487,6 +4515,69 @@ function toggleTopicStatus(subjectId, topicName) {
     
     showToast(`Topic marked as ${topic.status}`, 'success');
 }
+                    function saveSubtopicHour(subjectId, topicName, subtopicName, hours) {
+            // Ensure the nested structure exists
+            if (!userProgress.subjects[subjectId]) {
+                userProgress.subjects[subjectId] = { 
+                    topics: {}, 
+                    completedTopics: 0, 
+                    totalTopics: syllabusData[subjectId]?.topics?.length || 0 
+                };
+            }
+            if (!userProgress.subjects[subjectId].topics[topicName]) {
+                userProgress.subjects[subjectId].topics[topicName] = { 
+                    status: 'not-started', 
+                    subtopics: {} 
+                };
+            }
+            if (!userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName]) {
+                userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName] = { 
+                    actualHours: 0, 
+                    completed: false 
+                };
+            }
+            
+            // Save the actual hours (independent of status)
+            userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = hours;
+            
+            // Save to storage
+            DataStorage.save('progress', userProgress);
+            
+            // Update the topic's total hours display
+            updateTopicHoursDisplay(subjectId, topicName);
+            
+            // Update dashboard
+            updateDashboard();
+            
+            showToast(`Saved: ${subtopicName} - ${hours} hours`, 'success');
+        }
+        
+        function updateTopicHoursDisplay(subjectId, topicName) {
+            // Calculate total hours for the topic
+            let totalHours = 0;
+            if (userProgress.subjects[subjectId] && userProgress.subjects[subjectId].topics[topicName]) {
+                const subtopics = userProgress.subjects[subjectId].topics[topicName].subtopics;
+                Object.values(subtopics).forEach(subtopic => {
+                    totalHours += subtopic.actualHours || 0;
+                });
+            }
+            
+            // Find and update the topic header
+            const topicHeader = document.querySelector(`.topic-header[data-subject="${subjectId}"][data-topic="${topicName}"]`);
+            if (topicHeader) {
+                let hoursBadge = topicHeader.querySelector('.topic-total-hours');
+                if (!hoursBadge) {
+                    hoursBadge = document.createElement('span');
+                    hoursBadge.className = 'topic-total-hours';
+                    hoursBadge.style.marginLeft = '10px';
+                    hoursBadge.style.color = 'var(--secondary)';
+                    hoursBadge.style.fontWeight = '600';
+                    hoursBadge.style.fontSize = '14px';
+                    topicHeader.querySelector('.topic-title').appendChild(hoursBadge);
+                }
+                hoursBadge.textContent = `Total: ${totalHours.toFixed(1)}h`;
+            }
+        }
         function updateCompletedTopics(subjectId) {
             if (!userProgress.subjects[subjectId]) return;
             
@@ -5354,15 +5445,40 @@ function toggleTopicStatus(subjectId, topicName) {
         // ====================
         // SERVICE WORKER FOR OFFLINE CAPABILITY
         // ====================
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').then(registration => {
-                    console.log('ServiceWorker registration successful');
-                }).catch(err => {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
+       // Service Worker Registration with fallback
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    // Try multiple paths for service worker
+    const swPaths = ['service-worker.js', './service-worker.js', 'Pro/service-worker.js'];
+    
+    const registerSW = (path) => {
+      navigator.serviceWorker.register(path)
+        .then(function(registration) {
+          console.log('✅ Service Worker registered with scope:', registration.scope);
+          
+          // Track updates
+          registration.addEventListener('updatefound', function() {
+            const newWorker = registration.installing;
+            console.log('🔄 Service Worker update found:', newWorker);
+            
+            newWorker.addEventListener('statechange', function() {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('🔄 New content available');
+                showToast('Update available! Refresh for latest version.', 'success');
+              }
             });
-        }
+          });
+        })
+        .catch(function(error) {
+          console.warn(`Service Worker registration failed for ${path}:`, error);
+          return false;
+        });
+    };
+    
+    // Try first path
+    registerSW(swPaths[0]);
+  });
+}
 
     </script>
     <!-- PWA Installation Handler -->
@@ -5652,6 +5768,7 @@ function showToast(message, type) {
 </script>
 </body>
 </html>
+
 
 
 
