@@ -1,204 +1,676 @@
-Looking at the code, I can identify the main issues and provide fixes. The problems are in the toggleTopicStatus function and saveAllProgress function.
+I'll create optimized and properly aligned manifest.json and service-worker.js files for your CA Final Pro Tracker application:
 
-PROBLEM 1: In toggleTopicStatus function (Lines ~2510-2610)
+manifest.json (Updated for your application)
 
-When you mark a topic as "completed", it overwrites your manual hours with weightage-based hours.
+```json
+{
+  "name": "CA Final Pro Tracker",
+  "short_name": "CA Pro Tracker",
+  "description": "Professional Offline Study Management System for CA Final Exams",
+  "start_url": "/CA2.O/",
+  "scope": "/CA2.O/",
+  "display": "standalone",
+  "background_color": "#2c3e50",
+  "theme_color": "#2c3e50",
+  "orientation": "portrait-primary",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard View"
+    },
+    {
+      "src": "screenshot2.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile View"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View study progress and analytics",
+      "url": "/CA2.O/#dashboard",
+      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Add Target",
+      "short_name": "Target",
+      "description": "Add new study target",
+      "url": "/CA2.O/#planning",
+      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Subjects",
+      "short_name": "Subjects",
+      "description": "View subjects and topics",
+      "url": "/CA2.O/#subjects",
+      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://satqm.github.io/CA2.O/manifest.json"
+    }
+  ],
+  "prefer_related_applications": false,
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "handle_links": "preferred",
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
+}
+```
 
-FIX:
-
-Find this block in toggleTopicStatus function:
+service-worker.js (Optimized and updated)
 
 ```javascript
-if (nextStatus === 'completed') {
-    // Mark all subtopics as completed with calculated hours
-    Object.keys(topic.subtopics).forEach(subtopicName => {
-        const subtopic = topic.subtopics[subtopicName];
-        
-        // Calculate weightage-based hours
-        const subjectData = syllabusData[subjectId];
-        const syllabusTopic = subjectData.topics.find(t => t.name === topicName);
-        
-        if (syllabusTopic) {
-            const subjectPlannedHours = userStudyPlan?.subjectHours?.[subjectId] || 0;
-            const topicWeightage = syllabusTopic.weightage;
-            const topicPlannedHours = (topicWeightage / 100) * subjectPlannedHours;
-            
-            const subtopicData = syllabusTopic.subtopics.find(s => s.name === subtopicName);
-            if (subtopicData) {
-                const subtopicWeightage = subtopicData.weight;
-                subtopic.actualHours = (subtopicWeightage / 100) * topicPlannedHours;
+// ============================================
+// CA Final Pro Tracker - Service Worker v4.0
+// ============================================
+
+const APP_VERSION = '4.0.0';
+const CACHE_NAME = `ca-final-pro-tracker-v${APP_VERSION}`;
+
+// Assets to cache on install
+const PRECACHE_ASSETS = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-72x72.png',
+  './icon-96x96.png',
+  './icon-128x128.png',
+  './icon-144x144.png',
+  './icon-192x192.png',
+  './icon-512x512.png',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+  'https://cdn.jsdelivr.net/npm/chart.js'
+];
+
+// Network-first resources (will try network first, then cache)
+const NETWORK_FIRST_RESOURCES = [
+  'https://fonts.googleapis.com',
+  'https://fonts.gstatic.com'
+];
+
+// Cache-first resources (will try cache first, then network)
+const CACHE_FIRST_RESOURCES = [
+  'https://cdnjs.cloudflare.com',
+  'https://cdn.jsdelivr.net'
+];
+
+// ============================================
+// INSTALL EVENT - Cache core assets
+// ============================================
+self.addEventListener('install', event => {
+  console.log('[Service Worker] Installing version:', APP_VERSION);
+  
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        console.log('[Service Worker] Caching core assets');
+        return cache.addAll(PRECACHE_ASSETS);
+      })
+      .then(() => {
+        console.log('[Service Worker] Skip waiting on install');
+        return self.skipWaiting();
+      })
+      .catch(error => {
+        console.error('[Service Worker] Cache installation failed:', error);
+      })
+  );
+});
+
+// ============================================
+// ACTIVATE EVENT - Clean up old caches
+// ============================================
+self.addEventListener('activate', event => {
+  console.log('[Service Worker] Activating version:', APP_VERSION);
+  
+  event.waitUntil(
+    caches.keys()
+      .then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            if (cacheName !== CACHE_NAME) {
+              console.log('[Service Worker] Deleting old cache:', cacheName);
+              return caches.delete(cacheName);
             }
+          })
+        );
+      })
+      .then(() => {
+        console.log('[Service Worker] Claiming clients');
+        return self.clients.claim();
+      })
+      .then(() => {
+        // Schedule notifications after activation
+        scheduleNotifications();
+        console.log('[Service Worker] Notifications scheduled');
+      })
+  );
+});
+
+// ============================================
+// FETCH EVENT - Network strategies
+// ============================================
+self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+  
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') return;
+  
+  // Skip chrome-extension requests
+  if (url.protocol === 'chrome-extension:') return;
+  
+  // Skip analytics/telemetry
+  if (url.hostname.includes('google-analytics') || 
+      url.hostname.includes('doubleclick.net')) {
+    return;
+  }
+  
+  event.respondWith(
+    (async () => {
+      // Network-first for API calls and dynamic content
+      if (url.pathname.includes('/api/') || url.search.includes('nocache=true')) {
+        try {
+          return await fetch(event.request);
+        } catch (error) {
+          const cached = await caches.match(event.request);
+          if (cached) return cached;
+          throw error;
         }
-        
-        subtopic.completed = true;
-    });
+      }
+      
+      // Cache-first for CDN resources
+      if (CACHE_FIRST_RESOURCES.some(domain => url.href.includes(domain))) {
+        const cachedResponse = await caches.match(event.request);
+        if (cachedResponse) {
+          // Update cache in background
+          fetchAndCache(event.request);
+          return cachedResponse;
+        }
+        return fetchAndCache(event.request);
+      }
+      
+      // Network-first for fonts
+      if (NETWORK_FIRST_RESOURCES.some(domain => url.href.includes(domain))) {
+        try {
+          const networkResponse = await fetch(event.request);
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(event.request, networkResponse.clone());
+          return networkResponse;
+        } catch (error) {
+          const cachedResponse = await caches.match(event.request);
+          if (cachedResponse) return cachedResponse;
+          throw error;
+        }
+      }
+      
+      // Stale-while-revalidate for everything else
+      const cachedResponse = await caches.match(event.request);
+      const fetchPromise = fetchAndCache(event.request);
+      
+      return cachedResponse || fetchPromise;
+    })()
+  );
+});
+
+// Helper function to fetch and cache
+async function fetchAndCache(request) {
+  try {
+    const networkResponse = await fetch(request);
+    
+    // Don't cache non-successful responses
+    if (!networkResponse.ok) return networkResponse;
+    
+    // Don't cache opaque responses (CORS)
+    if (networkResponse.type === 'opaque') return networkResponse;
+    
+    const cache = await caches.open(CACHE_NAME);
+    cache.put(request, networkResponse.clone());
+    return networkResponse;
+  } catch (error) {
+    console.error('[Service Worker] Fetch failed:', error);
+    throw error;
+  }
 }
+
+// ============================================
+// BACKGROUND SYNC & PERIODIC SYNC
+// ============================================
+self.addEventListener('sync', event => {
+  if (event.tag === 'sync-data') {
+    console.log('[Service Worker] Background sync triggered');
+    event.waitUntil(syncAppData());
+  }
+});
+
+self.addEventListener('periodicsync', event => {
+  if (event.tag === 'daily-sync' && event.registration) {
+    console.log('[Service Worker] Periodic sync triggered');
+    event.waitUntil(syncAppData());
+  }
+});
+
+async function syncAppData() {
+  // Here you can implement data sync with a backend if needed
+  console.log('[Service Worker] Syncing app data');
+  return Promise.resolve();
+}
+
+// ============================================
+// PUSH NOTIFICATIONS
+// ============================================
+self.addEventListener('push', event => {
+  console.log('[Service Worker] Push received:', event);
+  
+  let data = { title: 'CA Final Pro Tracker', body: 'New notification' };
+  
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch (e) {
+      data.body = event.data.text();
+    }
+  }
+  
+  const options = {
+    body: data.body,
+    icon: './icon-192x192.png',
+    badge: './icon-96x96.png',
+    vibrate: [200, 100, 200],
+    data: {
+      url: data.url || './',
+      dateOfArrival: Date.now()
+    },
+    actions: [
+      {
+        action: 'open',
+        title: 'Open App'
+      },
+      {
+        action: 'close',
+        title: 'Close'
+      }
+    ]
+  };
+  
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  );
+});
+
+self.addEventListener('notificationclick', event => {
+  console.log('[Service Worker] Notification click:', event);
+  
+  event.notification.close();
+  
+  if (event.action === 'close') {
+    return;
+  }
+  
+  event.waitUntil(
+    clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true
+    }).then(clientList => {
+      // Check if there's already a window/tab open
+      for (const client of clientList) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      // If no window is open, open a new one
+      if (clients.openWindow) {
+        return clients.openWindow(event.notification.data.url || './');
+      }
+    })
+  );
+});
+
+// ============================================
+// NOTIFICATION SCHEDULING
+// ============================================
+function scheduleNotifications() {
+  // Clear any existing notifications
+  self.registration.getNotifications().then(notifications => {
+    notifications.forEach(notification => notification.close());
+  });
+  
+  // Check notification permission
+  if (Notification.permission !== 'granted') {
+    console.log('[Service Worker] Notifications not granted');
+    return;
+  }
+  
+  // Schedule study reminders
+  scheduleStudyReminders();
+  
+  // Schedule periodic notifications every 3 hours during study hours
+  schedulePeriodicReminders();
+}
+
+function scheduleStudyReminders() {
+  const now = new Date();
+  
+  // Morning reminder at 6 AM
+  const morningTime = new Date(now);
+  morningTime.setHours(6, 0, 0, 0);
+  if (morningTime < now) {
+    morningTime.setDate(morningTime.getDate() + 1);
+  }
+  
+  const morningDelay = morningTime.getTime() - Date.now();
+  
+  setTimeout(() => {
+    showNotification(
+      '🌅 Morning Study Reminder',
+      'Good morning! Plan your study targets for today.',
+      'morning-reminder'
+    );
+    // Reschedule for next day
+    scheduleStudyReminders();
+  }, morningDelay);
+  
+  // Evening reminder at 8 PM
+  const eveningTime = new Date(now);
+  eveningTime.setHours(20, 0, 0, 0);
+  if (eveningTime < now) {
+    eveningTime.setDate(eveningTime.getDate() + 1);
+  }
+  
+  const eveningDelay = eveningTime.getTime() - Date.now();
+  
+  setTimeout(() => {
+    showNotification(
+      '🌙 Evening Progress Check',
+      'Evening check! Update your study hours and track progress.',
+      'evening-reminder'
+    );
+  }, eveningDelay);
+}
+
+function schedulePeriodicReminders() {
+  // Check every 3 hours between 8 AM and 10 PM
+  setInterval(() => {
+    const now = new Date();
+    const hour = now.getHours();
+    
+    if (hour >= 8 && hour <= 22) {
+      const messages = [
+        "📚 Time for focused study!",
+        "⏰ Stay consistent with your targets!",
+        "🎯 Don't forget to log your study hours!",
+        "💪 Keep pushing toward your CA goals!",
+        "📈 Track your progress for better results!"
+      ];
+      
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      showNotification('CA Study Time', randomMessage, 'periodic-reminder');
+    }
+  }, 3 * 60 * 60 * 1000); // 3 hours
+}
+
+function showNotification(title, body, tag) {
+  self.registration.showNotification(title, {
+    body: body,
+    icon: './icon-192x192.png',
+    badge: './icon-96x96.png',
+    tag: tag,
+    requireInteraction: false,
+    silent: false,
+    vibrate: [200, 100, 200],
+    data: {
+      dateOfArrival: Date.now(),
+      primaryKey: 1
+    }
+  }).catch(error => {
+    console.error('[Service Worker] Failed to show notification:', error);
+  });
+}
+
+// ============================================
+// MESSAGE HANDLING
+// ============================================
+self.addEventListener('message', event => {
+  console.log('[Service Worker] Message received:', event.data);
+  
+  if (event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+  
+  if (event.data.type === 'CLEAR_CACHE') {
+    caches.delete(CACHE_NAME).then(() => {
+      event.ports[0].postMessage({ success: true });
+    });
+  }
+  
+  if (event.data.type === 'GET_CACHE_INFO') {
+    caches.open(CACHE_NAME).then(cache => {
+      cache.keys().then(keys => {
+        event.ports[0].postMessage({ 
+          cacheName: CACHE_NAME,
+          cacheSize: keys.length,
+          version: APP_VERSION 
+        });
+      });
+    });
+  }
+});
+
+// ============================================
+// ERROR HANDLING
+// ============================================
+self.addEventListener('error', event => {
+  console.error('[Service Worker] Error:', event.error);
+});
+
+self.addEventListener('unhandledrejection', event => {
+  console.error('[Service Worker] Unhandled rejection:', event.reason);
+});
 ```
 
-REPLACE with this corrected version:
+Additional Icons Setup
 
-```javascript
-if (nextStatus === 'completed') {
-    // Mark as completed but PRESERVE any existing manual hours
-    Object.keys(topic.subtopics).forEach(subtopicName => {
-        const subtopic = topic.subtopics[subtopicName];
+Since your manifest references specific icon sizes, you'll need these icon files. Here's a simple HTML file to generate base64 placeholder icons:
+
+```html
+<!-- icon-generator.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Icon Generator</title>
+    <style>
+        canvas { border: 1px solid #ccc; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Generate App Icons</h2>
+    <div id="icons"></div>
+    
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        const container = document.getElementById('icons');
         
-        // ONLY calculate weightage hours if user hasn't entered any hours (0 or undefined)
-        if (!subtopic.actualHours || subtopic.actualHours === 0) {
-            // Find topic data from syllabus to get weightage
-            const subjectData = syllabusData[subjectId];
-            const syllabusTopic = subjectData.topics.find(t => t.name === topicName);
+        sizes.forEach(size => {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            canvas.id = `icon-${size}`;
             
-            if (syllabusTopic) {
-                // Calculate topic planned hours based on subject distribution
-                const subjectPlannedHours = userStudyPlan?.subjectHours?.[subjectId] || 0;
-                const topicWeightage = syllabusTopic.weightage;
-                const topicPlannedHours = (topicWeightage / 100) * subjectPlannedHours;
-                
-                // Find subtopic data to get its weight
-                const subtopicData = syllabusTopic.subtopics.find(s => s.name === subtopicName);
-                if (subtopicData) {
-                    const subtopicWeightage = subtopicData.weight;
-                    // Calculate hours: subtopic weight * topic planned hours
-                    subtopic.actualHours = (subtopicWeightage / 100) * topicPlannedHours;
-                } else {
-                    // Fallback: distribute equally
-                    const numSubtopics = Object.keys(topic.subtopics).length;
-                    subtopic.actualHours = topicPlannedHours / numSubtopics;
-                }
+            const ctx = canvas.getContext('2d');
+            
+            // Draw background
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#2c3e50');
+            gradient.addColorStop(1, '#3498db');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Draw book icon
+            ctx.fillStyle = '#fff';
+            ctx.font = `${size/2}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('📚', size/2, size/2);
+            
+            // Add border
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = size/50;
+            ctx.strokeRect(size/20, size/20, size - size/10, size - size/10);
+            
+            container.appendChild(canvas);
+            
+            // Create download link
+            const link = document.createElement('a');
+            link.download = `icon-${size}x${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.textContent = `Download ${size}x${size}`;
+            link.style.display = 'block';
+            container.appendChild(link);
+        });
+    </script>
+</body>
+</html>
+```
+
+Instructions for Deployment:
+
+1. Save the manifest.json in your project root
+2. Save the service-worker.js in your project root
+3. Generate icons using the icon generator HTML or create them with:
+   · Background: Gradient from #2c3e50 to #3498db
+   · Icon: White book emoji (📚)
+   · Border: White border
+4. Update your HTML file to include proper service worker registration:
+
+```html
+<script>
+// PWA Installation
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/CA2.O/service-worker.js')
+      .then(registration => {
+        console.log('ServiceWorker registered:', registration);
+        
+        // Check for updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          console.log('ServiceWorker update found:', newWorker);
+          
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('New content available; please refresh.');
+              showToast('App update available! Refresh to update.', 'success');
             }
-        }
-        
-        // Mark as completed (regardless of whether hours were auto-calculated or manual)
-        subtopic.completed = true;
-    });
+          });
+        });
+      })
+      .catch(error => {
+        console.error('ServiceWorker registration failed:', error);
+      });
+  });
 }
+
+// Install prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  // Show install button after 30 seconds
+  setTimeout(() => {
+    if (!localStorage.getItem('installPromptDismissed')) {
+      showToast('Install this app for offline access!', 'success');
+    }
+  }, 30000);
+});
+
+// Install function
+async function installPWA() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    } else {
+      console.log('User dismissed the install prompt');
+    }
+    deferredPrompt = null;
+  }
+}
+</script>
 ```
 
-PROBLEM 2: In saveAllProgress function (Lines ~2570-2620)
+Key Features of this Setup:
 
-Need to track manual entries and never overwrite them.
+1. Versioned Caching: Automatically updates when you change APP_VERSION
+2. Smart Fetch Strategies: Different strategies for different resources
+3. Offline Support: App works completely offline
+4. Scheduled Notifications: Study reminders at optimal times
+5. Background Sync: Ready for future data sync features
+6. Update Management: Automatically handles app updates
+7. Error Handling: Robust error and rejection handling
+8. Message System: Communication between app and service worker
 
-FIX:
-
-Find this block in saveAllProgress function:
-
-```javascript
-if (hours >= 0) {
-    // Ensure progress structure exists
-    if (!userProgress.subjects[subjectId]) {
-        userProgress.subjects[subjectId] = { topics: {}, completedTopics: 0, totalTopics: syllabusData[subjectId].topics.length };
-    }
-    if (!userProgress.subjects[subjectId].topics[topicName]) {
-        userProgress.subjects[subjectId].topics[topicName] = { status: 'not-started', subtopics: {} };
-    }
-    if (!userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName]) {
-        userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName] = { 
-            actualHours: 0, 
-            completed: false
-        };
-    }
-    
-    // Update hours
-    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = hours;
-    
-    // Auto-mark as completed if hours > 0
-    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = hours > 0;
-    
-    // Auto-mark topic as in-progress if hours added
-    if (hours > 0 && userProgress.subjects[subjectId].topics[topicName].status === 'not-started') {
-        userProgress.subjects[subjectId].topics[topicName].status = 'inprogress';
-    }
-    
-    savedCount++;
-}
-```
-
-REPLACE with this corrected version:
-
-```javascript
-if (hours >= 0) {
-    // Ensure progress structure exists
-    if (!userProgress.subjects[subjectId]) {
-        userProgress.subjects[subjectId] = { topics: {}, completedTopics: 0, totalTopics: syllabusData[subjectId].topics.length };
-    }
-    if (!userProgress.subjects[subjectId].topics[topicName]) {
-        userProgress.subjects[subjectId].topics[topicName] = { status: 'not-started', subtopics: {} };
-    }
-    if (!userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName]) {
-        userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName] = { 
-            actualHours: 0, 
-            completed: false,
-            manualEntry: false  // Track if this was manually entered
-        };
-    }
-    
-    // Get previous hours to detect changes
-    const prevHours = userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours || 0;
-    
-    // Update hours
-    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = hours;
-    
-    // Mark as manual entry if user entered/changed hours (and it's different from weightage-based)
-    if (hours !== prevHours) {
-        userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].manualEntry = true;
-    }
-    
-    // Auto-mark as completed if hours > 0
-    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = hours > 0;
-    
-    // Auto-mark topic as in-progress if hours added
-    if (hours > 0 && userProgress.subjects[subjectId].topics[topicName].status === 'not-started') {
-        userProgress.subjects[subjectId].topics[topicName].status = 'inprogress';
-    }
-    
-    savedCount++;
-}
-```
-
-PROBLEM 3: Need to update the "not-started" case too
-
-Find this block in toggleTopicStatus function:
-
-```javascript
-} else if (nextStatus === 'not-started') {
-    // Reset hours and completion
-    Object.keys(topic.subtopics).forEach(subtopicName => {
-        const subtopic = topic.subtopics[subtopicName];
-        subtopic.actualHours = 0;
-        subtopic.completed = false;
-    });
-}
-```
-
-REPLACE with:
-
-```javascript
-} else if (nextStatus === 'not-started') {
-    // When marking as not-started, ONLY reset hours that were auto-calculated
-    // NEVER reset manually entered hours
-    Object.keys(topic.subtopics).forEach(subtopicName => {
-        const subtopic = topic.subtopics[subtopicName];
-        
-        // Only reset hours if they were NOT manually entered
-        if (!subtopic.manualEntry) {
-            subtopic.actualHours = 0;
-        }
-        subtopic.completed = false;
-    });
-}
-```
-
-SUMMARY OF CHANGES:
-
-1. In toggleTopicStatus function - Only calculate weightage hours if user hasn't entered any hours (0 or undefined)
-2. In saveAllProgress function - Track manual entries with a manualEntry flag
-3. In both functions - Never overwrite manually entered hours
-4. When marking "not-started" - Only reset auto-calculated hours, keep manual hours
-
-These changes ensure:
-
-· ✅ Manual hours entered by user are ALWAYS preserved
-· ✅ Weightage-based calculation only happens when no manual hours exist
-· ✅ Dashboard shows actual hours (manual or auto-calculated)
-· ✅ No duplicate hours or conflicts between manual and weightage calculations
+This setup makes your CA Final Pro Tracker a fully functional Progressive Web App with excellent offline capabilities and professional installation experience.
