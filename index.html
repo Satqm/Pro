@@ -2564,6 +2564,18 @@
 
 
     <script>
+        console.log('🔧 Checking PWA requirements...');
+console.log('Service Worker support:', 'serviceWorker' in navigator);
+console.log('HTTPS:', window.location.protocol === 'https:');
+console.log('Manifest:', document.querySelector('link[rel="manifest"]') !== null);
+
+if (!('serviceWorker' in navigator)) {
+    console.warn('⚠️ Service Worker not supported in this browser');
+}
+
+if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+    console.warn('⚠️ PWA requires HTTPS (except localhost)');
+}
         // ====================
         // GLOBAL VARIABLES
         // ====================
@@ -4369,17 +4381,26 @@
             
             topic.status = nextStatus;
             
-            if (nextStatus === 'completed') {
-                Object.keys(topic.subtopics).forEach(subtopicName => {
-                    const subtopic = topic.subtopics[subtopicName];
-                    subtopic.completed = true;
-                });
-            } else if (nextStatus === 'not-started') {
-                Object.keys(topic.subtopics).forEach(subtopicName => {
-                    const subtopic = topic.subtopics[subtopicName];
-                    subtopic.completed = false;
-                });
-            }
+           if (nextStatus === 'completed') {
+    Object.keys(topic.subtopics).forEach(subtopicName => {
+        const subtopic = topic.subtopics[subtopicName];
+        
+        // Get the actual hours from the input field
+        const inputId = `time-${subjectId}-${topicName.replace(/\s+/g, '-')}-${subtopicName.replace(/\s+/g, '-')}`;
+        const inputElement = document.getElementById(inputId);
+        
+        if (inputElement) {
+            subtopic.actualHours = parseFloat(inputElement.value) || 0;
+        }
+        
+        subtopic.completed = true;
+    });
+} else if (nextStatus === 'not-started') {
+    Object.keys(topic.subtopics).forEach(subtopicName => {
+        const subtopic = topic.subtopics[subtopicName];
+        subtopic.completed = false;
+    });
+}
             
             updateCompletedTopics(subjectId);
             
@@ -4403,53 +4424,76 @@
             userProgress.subjects[subjectId].completedTopics = completedCount;
         }
         
-        function saveAllProgress() {
-            const timeInputs = document.querySelectorAll('input[type="number"][id^="time-"]');
-            let savedCount = 0;
-            
-            timeInputs.forEach(input => {
-                const id = input.id.replace('time-', '');
-                const [subjectId, topicNameEncoded, subtopicNameEncoded] = id.split('-');
-                
-                const topicName = topicNameEncoded.replace(/-/g, ' ');
-                const subtopicName = subtopicNameEncoded.replace(/-/g, ' ');
-                
-                const hours = parseFloat(input.value) || 0;
-                
-                if (hours >= 0) {
-                    if (!userProgress.subjects[subjectId]) {
-                        userProgress.subjects[subjectId] = { topics: {}, completedTopics: 0, totalTopics: syllabusData[subjectId].topics.length };
-                    }
-                    if (!userProgress.subjects[subjectId].topics[topicName]) {
-                        userProgress.subjects[subjectId].topics[topicName] = { status: 'not-started', subtopics: {} };
-                    }
-                    if (!userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName]) {
-                        userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName] = { 
-                            actualHours: 0, 
-                            completed: false
-                        };
-                    }
-                    
-                    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = hours;
-                    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = hours > 0;
-                    
-                    if (hours > 0 && userProgress.subjects[subjectId].topics[topicName].status === 'not-started') {
-                        userProgress.subjects[subjectId].topics[topicName].status = 'inprogress';
-                    }
-                    
-                    savedCount++;
-                }
-            });
-            
-            for (const subjectId in userProgress.subjects) {
-                updateCompletedTopics(subjectId);
+      function saveAllProgress() {
+    const timeInputs = document.querySelectorAll('input[type="number"][id^="time-"]');
+    let savedCount = 0;
+    
+    timeInputs.forEach(input => {
+        const id = input.id.replace('time-', '');
+        const parts = id.split('-');
+        const subjectId = parts[0];
+        const topicName = parts.slice(1, -1).join(' ').replace(/-/g, ' ');
+        const subtopicName = parts[parts.length - 1].replace(/-/g, ' ');
+        
+        const hours = parseFloat(input.value) || 0;
+        
+        if (hours >= 0) {
+            // Ensure the nested structure exists
+            if (!userProgress.subjects[subjectId]) {
+                userProgress.subjects[subjectId] = { 
+                    topics: {}, 
+                    completedTopics: 0, 
+                    totalTopics: syllabusData[subjectId]?.topics?.length || 0 
+                };
+            }
+            if (!userProgress.subjects[subjectId].topics[topicName]) {
+                userProgress.subjects[subjectId].topics[topicName] = { 
+                    status: 'not-started', 
+                    subtopics: {} 
+                };
+            }
+            if (!userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName]) {
+                userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName] = { 
+                    actualHours: 0, 
+                    completed: false 
+                };
             }
             
-            DataStorage.save('progress', userProgress);
-            updateDashboard();
+            // Save the actual hours
+            userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = hours;
+            userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = hours > 0;
             
-            showToast(`${savedCount} subtopic hours saved!`, 'success');
+            // Update topic status based on subtopic completion
+            const subtopics = Object.values(userProgress.subjects[subjectId].topics[topicName].subtopics);
+            const allCompleted = subtopics.length > 0 && subtopics.every(st => st.completed);
+            const anyInProgress = subtopics.some(st => st.actualHours > 0);
+            
+            if (allCompleted) {
+                userProgress.subjects[subjectId].topics[topicName].status = 'completed';
+            } else if (anyInProgress) {
+                userProgress.subjects[subjectId].topics[topicName].status = 'inprogress';
+            } else {
+                userProgress.subjects[subjectId].topics[topicName].status = 'not-started';
+            }
+            
+            savedCount++;
         }
+    });
+    
+    // Update completed topics count for each subject
+    for (const subjectId in userProgress.subjects) {
+        updateCompletedTopics(subjectId);
+    }
+    
+    // Save to storage
+    DataStorage.save('progress', userProgress);
+    
+    // Refresh the display
+    loadSubjectContent();
+    updateDashboard();
+    
+    showToast(`${savedCount} subtopic hours saved!`, 'success');
+}
         
         // ====================
         // PLANNING PAGE FUNCTIONS
@@ -5327,7 +5371,38 @@ function createInstallButton() {
 // Install PWA function
 async function installPWA() {
   if (!deferredPrompt) {
-    showToast('Installation not available. Please try again later.', 'warning');
+ // First check if we meet installation criteria
+if (!('serviceWorker' in navigator)) {
+    showToast('Service Worker not supported. Please use Chrome or Edge.', 'warning');
+    return;
+}
+
+if (!window.matchMedia('(display-mode: standalone)').matches && deferredPrompt) {
+    deferredPrompt.prompt();
+    
+    deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the install prompt');
+            showToast('App installed successfully! Check your home screen.', 'success');
+            
+            // Remove install button
+            const installBtn = document.getElementById('pwa-install-btn');
+            if (installBtn) installBtn.remove();
+            
+            // Remove install menu item
+            const installMenuItem = document.getElementById('install-app-menu');
+            if (installMenuItem) installMenuItem.style.display = 'none';
+        } else {
+            console.log('User dismissed the install prompt');
+            showToast('Installation cancelled. You can install later from the menu.', 'info');
+        }
+        deferredPrompt = null;
+    });
+} else if (window.matchMedia('(display-mode: standalone)').matches) {
+    showToast('App is already installed!', 'info');
+} else {
+    showToast('Installation not available right now. Try refreshing the page.', 'warning');
+}
     return;
   }
   
@@ -5403,8 +5478,13 @@ if ('serviceWorker' in navigator) {
           });
         });
       })
-      .catch(error => {
-        console.error('❌ Service Worker registration failed:', error);
+  .catch(error => {
+    console.error('❌ Service Worker registration failed:', error);
+    // Show user-friendly message
+    if (error.message.includes('MIME type')) {
+        showToast('Service Worker file not found. Please check server configuration.', 'warning');
+    } else {
+        showToast('Could not enable offline features. Please check connection.', 'warning');
       });
   });
 }
@@ -5496,5 +5576,6 @@ function showToast(message, type) {
 </script>
 </body>
 </html>
+
 
 
