@@ -1,177 +1,89 @@
-I'll create optimized and properly aligned manifest.json and service-worker.js files for your CA Final Pro Tracker application:
+Perfect! Now I'll update everything for your new URL: https://satqm.github.io/Pro/
 
-manifest.json (Updated for your application)
+Updated manifest.json (for https://satqm.github.io/Pro/)
 
 ```json
 {
   "name": "CA Final Pro Tracker",
-  "short_name": "CA Pro Tracker",
-  "description": "Professional Offline Study Management System for CA Final Exams",
-  "start_url": "/CA2.O/",
-  "scope": "/CA2.O/",
+  "short_name": "CA Tracker",
+  "description": "Professional Offline Study Management System",
+  "start_url": "https://satqm.github.io/Pro/",
+  "scope": "https://satqm.github.io/Pro/",
   "display": "standalone",
   "background_color": "#2c3e50",
   "theme_color": "#2c3e50",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "categories": ["education", "productivity"],
   "icons": [
     {
-      "src": "icon-72x72.png",
-      "sizes": "72x72",
+      "src": "https://satqm.github.io/Pro/icon-192.png",
       "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-384x384.png",
-      "sizes": "384x384",
+      "src": "https://satqm.github.io/Pro/icon-512.png",
       "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png",
       "purpose": "any maskable"
-    }
-  ],
-  "screenshots": [
+    },
     {
-      "src": "screenshot1.png",
-      "sizes": "1280x720",
+      "src": "https://satqm.github.io/Pro/icon-180.png",
       "type": "image/png",
-      "form_factor": "wide",
-      "label": "Dashboard View"
+      "sizes": "180x180",
+      "purpose": "any maskable"
     },
     {
-      "src": "screenshot2.png",
-      "sizes": "750x1334",
+      "src": "https://satqm.github.io/Pro/icon-144.png",
       "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Mobile View"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Dashboard",
-      "short_name": "Dashboard",
-      "description": "View study progress and analytics",
-      "url": "/CA2.O/#dashboard",
-      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
+      "sizes": "144x144",
+      "purpose": "any maskable"
     },
     {
-      "name": "Add Target",
-      "short_name": "Target",
-      "description": "Add new study target",
-      "url": "/CA2.O/#planning",
-      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
-    },
-    {
-      "name": "Subjects",
-      "short_name": "Subjects",
-      "description": "View subjects and topics",
-      "url": "/CA2.O/#subjects",
-      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
-    }
-  ],
-  "related_applications": [
-    {
-      "platform": "webapp",
-      "url": "https://satqm.github.io/CA2.O/manifest.json"
+      "src": "https://satqm.github.io/Pro/icon-96.png",
+      "type": "image/png",
+      "sizes": "96x96",
+      "purpose": "any maskable"
     }
   ],
   "prefer_related_applications": false,
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
-  "launch_handler": {
-    "client_mode": "focus-existing"
-  },
-  "handle_links": "preferred",
-  "edge_side_panel": {
-    "preferred_width": 400
-  }
+  "related_applications": [
+    {
+      "platform": "web",
+      "url": "https://satqm.github.io/Pro/"
+    }
+  ]
 }
 ```
 
-service-worker.js (Optimized and updated)
+Updated service-worker.js (for https://satqm.github.io/Pro/)
 
 ```javascript
-// ============================================
-// CA Final Pro Tracker - Service Worker v4.0
-// ============================================
+// CA Final Pro Tracker Service Worker - v1.0
+const CACHE_NAME = 'ca-final-pro-tracker-v1.0';
+const APP_VERSION = '1.0.0';
 
-const APP_VERSION = '4.0.0';
-const CACHE_NAME = `ca-final-pro-tracker-v${APP_VERSION}`;
-
-// Assets to cache on install
-const PRECACHE_ASSETS = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-72x72.png',
-  './icon-96x96.png',
-  './icon-128x128.png',
-  './icon-144x144.png',
-  './icon-192x192.png',
-  './icon-512x512.png',
+// Files to cache
+const STATIC_ASSETS = [
+  '/Pro/',
+  '/Pro/index.html',
+  '/Pro/manifest.json',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
   'https://cdn.jsdelivr.net/npm/chart.js'
 ];
 
-// Network-first resources (will try network first, then cache)
-const NETWORK_FIRST_RESOURCES = [
-  'https://fonts.googleapis.com',
-  'https://fonts.gstatic.com'
-];
-
-// Cache-first resources (will try cache first, then network)
-const CACHE_FIRST_RESOURCES = [
-  'https://cdnjs.cloudflare.com',
-  'https://cdn.jsdelivr.net'
-];
-
-// ============================================
-// INSTALL EVENT - Cache core assets
-// ============================================
+// Install event
 self.addEventListener('install', event => {
   console.log('[Service Worker] Installing version:', APP_VERSION);
   
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('[Service Worker] Caching core assets');
-        return cache.addAll(PRECACHE_ASSETS);
+        console.log('[Service Worker] Caching static assets');
+        return cache.addAll(STATIC_ASSETS);
       })
       .then(() => {
-        console.log('[Service Worker] Skip waiting on install');
+        console.log('[Service Worker] Skipping waiting');
         return self.skipWaiting();
       })
       .catch(error => {
@@ -180,387 +92,424 @@ self.addEventListener('install', event => {
   );
 });
 
-// ============================================
-// ACTIVATE EVENT - Clean up old caches
-// ============================================
+// Activate event
 self.addEventListener('activate', event => {
-  console.log('[Service Worker] Activating version:', APP_VERSION);
+  console.log('[Service Worker] Activating');
   
   event.waitUntil(
-    caches.keys()
-      .then(cacheNames => {
-        return Promise.all(
-          cacheNames.map(cacheName => {
-            if (cacheName !== CACHE_NAME) {
-              console.log('[Service Worker] Deleting old cache:', cacheName);
-              return caches.delete(cacheName);
-            }
-          })
-        );
-      })
-      .then(() => {
-        console.log('[Service Worker] Claiming clients');
-        return self.clients.claim();
-      })
-      .then(() => {
-        // Schedule notifications after activation
-        scheduleNotifications();
-        console.log('[Service Worker] Notifications scheduled');
-      })
-  );
-});
-
-// ============================================
-// FETCH EVENT - Network strategies
-// ============================================
-self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
-  
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') return;
-  
-  // Skip chrome-extension requests
-  if (url.protocol === 'chrome-extension:') return;
-  
-  // Skip analytics/telemetry
-  if (url.hostname.includes('google-analytics') || 
-      url.hostname.includes('doubleclick.net')) {
-    return;
-  }
-  
-  event.respondWith(
-    (async () => {
-      // Network-first for API calls and dynamic content
-      if (url.pathname.includes('/api/') || url.search.includes('nocache=true')) {
-        try {
-          return await fetch(event.request);
-        } catch (error) {
-          const cached = await caches.match(event.request);
-          if (cached) return cached;
-          throw error;
-        }
-      }
-      
-      // Cache-first for CDN resources
-      if (CACHE_FIRST_RESOURCES.some(domain => url.href.includes(domain))) {
-        const cachedResponse = await caches.match(event.request);
-        if (cachedResponse) {
-          // Update cache in background
-          fetchAndCache(event.request);
-          return cachedResponse;
-        }
-        return fetchAndCache(event.request);
-      }
-      
-      // Network-first for fonts
-      if (NETWORK_FIRST_RESOURCES.some(domain => url.href.includes(domain))) {
-        try {
-          const networkResponse = await fetch(event.request);
-          const cache = await caches.open(CACHE_NAME);
-          cache.put(event.request, networkResponse.clone());
-          return networkResponse;
-        } catch (error) {
-          const cachedResponse = await caches.match(event.request);
-          if (cachedResponse) return cachedResponse;
-          throw error;
-        }
-      }
-      
-      // Stale-while-revalidate for everything else
-      const cachedResponse = await caches.match(event.request);
-      const fetchPromise = fetchAndCache(event.request);
-      
-      return cachedResponse || fetchPromise;
-    })()
-  );
-});
-
-// Helper function to fetch and cache
-async function fetchAndCache(request) {
-  try {
-    const networkResponse = await fetch(request);
-    
-    // Don't cache non-successful responses
-    if (!networkResponse.ok) return networkResponse;
-    
-    // Don't cache opaque responses (CORS)
-    if (networkResponse.type === 'opaque') return networkResponse;
-    
-    const cache = await caches.open(CACHE_NAME);
-    cache.put(request, networkResponse.clone());
-    return networkResponse;
-  } catch (error) {
-    console.error('[Service Worker] Fetch failed:', error);
-    throw error;
-  }
-}
-
-// ============================================
-// BACKGROUND SYNC & PERIODIC SYNC
-// ============================================
-self.addEventListener('sync', event => {
-  if (event.tag === 'sync-data') {
-    console.log('[Service Worker] Background sync triggered');
-    event.waitUntil(syncAppData());
-  }
-});
-
-self.addEventListener('periodicsync', event => {
-  if (event.tag === 'daily-sync' && event.registration) {
-    console.log('[Service Worker] Periodic sync triggered');
-    event.waitUntil(syncAppData());
-  }
-});
-
-async function syncAppData() {
-  // Here you can implement data sync with a backend if needed
-  console.log('[Service Worker] Syncing app data');
-  return Promise.resolve();
-}
-
-// ============================================
-// PUSH NOTIFICATIONS
-// ============================================
-self.addEventListener('push', event => {
-  console.log('[Service Worker] Push received:', event);
-  
-  let data = { title: 'CA Final Pro Tracker', body: 'New notification' };
-  
-  if (event.data) {
-    try {
-      data = event.data.json();
-    } catch (e) {
-      data.body = event.data.text();
-    }
-  }
-  
-  const options = {
-    body: data.body,
-    icon: './icon-192x192.png',
-    badge: './icon-96x96.png',
-    vibrate: [200, 100, 200],
-    data: {
-      url: data.url || './',
-      dateOfArrival: Date.now()
-    },
-    actions: [
-      {
-        action: 'open',
-        title: 'Open App'
-      },
-      {
-        action: 'close',
-        title: 'Close'
-      }
-    ]
-  };
-  
-  event.waitUntil(
-    self.registration.showNotification(data.title, options)
-  );
-});
-
-self.addEventListener('notificationclick', event => {
-  console.log('[Service Worker] Notification click:', event);
-  
-  event.notification.close();
-  
-  if (event.action === 'close') {
-    return;
-  }
-  
-  event.waitUntil(
-    clients.matchAll({
-      type: 'window',
-      includeUncontrolled: true
-    }).then(clientList => {
-      // Check if there's already a window/tab open
-      for (const client of clientList) {
-        if (client.url.includes(self.location.origin) && 'focus' in client) {
-          return client.focus();
-        }
-      }
-      // If no window is open, open a new one
-      if (clients.openWindow) {
-        return clients.openWindow(event.notification.data.url || './');
-      }
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('[Service Worker] Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => {
+      console.log('[Service Worker] Claiming clients');
+      return self.clients.claim();
     })
   );
 });
 
-// ============================================
-// NOTIFICATION SCHEDULING
-// ============================================
-function scheduleNotifications() {
-  // Clear any existing notifications
-  self.registration.getNotifications().then(notifications => {
-    notifications.forEach(notification => notification.close());
-  });
+// Fetch event
+self.addEventListener('fetch', event => {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') return;
   
-  // Check notification permission
-  if (Notification.permission !== 'granted') {
-    console.log('[Service Worker] Notifications not granted');
-    return;
-  }
-  
-  // Schedule study reminders
-  scheduleStudyReminders();
-  
-  // Schedule periodic notifications every 3 hours during study hours
-  schedulePeriodicReminders();
-}
-
-function scheduleStudyReminders() {
-  const now = new Date();
-  
-  // Morning reminder at 6 AM
-  const morningTime = new Date(now);
-  morningTime.setHours(6, 0, 0, 0);
-  if (morningTime < now) {
-    morningTime.setDate(morningTime.getDate() + 1);
-  }
-  
-  const morningDelay = morningTime.getTime() - Date.now();
-  
-  setTimeout(() => {
-    showNotification(
-      '🌅 Morning Study Reminder',
-      'Good morning! Plan your study targets for today.',
-      'morning-reminder'
-    );
-    // Reschedule for next day
-    scheduleStudyReminders();
-  }, morningDelay);
-  
-  // Evening reminder at 8 PM
-  const eveningTime = new Date(now);
-  eveningTime.setHours(20, 0, 0, 0);
-  if (eveningTime < now) {
-    eveningTime.setDate(eveningTime.getDate() + 1);
-  }
-  
-  const eveningDelay = eveningTime.getTime() - Date.now();
-  
-  setTimeout(() => {
-    showNotification(
-      '🌙 Evening Progress Check',
-      'Evening check! Update your study hours and track progress.',
-      'evening-reminder'
-    );
-  }, eveningDelay);
-}
-
-function schedulePeriodicReminders() {
-  // Check every 3 hours between 8 AM and 10 PM
-  setInterval(() => {
-    const now = new Date();
-    const hour = now.getHours();
-    
-    if (hour >= 8 && hour <= 22) {
-      const messages = [
-        "📚 Time for focused study!",
-        "⏰ Stay consistent with your targets!",
-        "🎯 Don't forget to log your study hours!",
-        "💪 Keep pushing toward your CA goals!",
-        "📈 Track your progress for better results!"
-      ];
-      
-      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-      showNotification('CA Study Time', randomMessage, 'periodic-reminder');
-    }
-  }, 3 * 60 * 60 * 1000); // 3 hours
-}
-
-function showNotification(title, body, tag) {
-  self.registration.showNotification(title, {
-    body: body,
-    icon: './icon-192x192.png',
-    badge: './icon-96x96.png',
-    tag: tag,
-    requireInteraction: false,
-    silent: false,
-    vibrate: [200, 100, 200],
-    data: {
-      dateOfArrival: Date.now(),
-      primaryKey: 1
-    }
-  }).catch(error => {
-    console.error('[Service Worker] Failed to show notification:', error);
-  });
-}
-
-// ============================================
-// MESSAGE HANDLING
-// ============================================
-self.addEventListener('message', event => {
-  console.log('[Service Worker] Message received:', event.data);
-  
-  if (event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-  
-  if (event.data.type === 'CLEAR_CACHE') {
-    caches.delete(CACHE_NAME).then(() => {
-      event.ports[0].postMessage({ success: true });
-    });
-  }
-  
-  if (event.data.type === 'GET_CACHE_INFO') {
-    caches.open(CACHE_NAME).then(cache => {
-      cache.keys().then(keys => {
-        event.ports[0].postMessage({ 
-          cacheName: CACHE_NAME,
-          cacheSize: keys.length,
-          version: APP_VERSION 
-        });
-      });
-    });
-  }
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        // Return cached response if found
+        if (response) {
+          return response;
+        }
+        
+        // Clone the request
+        const fetchRequest = event.request.clone();
+        
+        return fetch(fetchRequest)
+          .then(response => {
+            // Check if response is valid
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+            
+            // Clone the response
+            const responseToCache = response.clone();
+            
+            // Cache the new response
+            caches.open(CACHE_NAME)
+              .then(cache => {
+                cache.put(event.request, responseToCache);
+              });
+            
+            return response;
+          })
+          .catch(error => {
+            console.error('[Service Worker] Fetch failed:', error);
+            // If offline and requesting HTML, return the cached index page
+            if (event.request.headers.get('accept').includes('text/html')) {
+              return caches.match('/Pro/');
+            }
+            throw error;
+          });
+      })
+  );
 });
 
-// ============================================
-// ERROR HANDLING
-// ============================================
-self.addEventListener('error', event => {
-  console.error('[Service Worker] Error:', event.error);
-});
-
-self.addEventListener('unhandledrejection', event => {
-  console.error('[Service Worker] Unhandled rejection:', event.reason);
+// Notification click handler
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  
+  event.waitUntil(
+    clients.matchAll({ type: 'window' })
+      .then(clientList => {
+        // Check if there's already a window open
+        for (const client of clientList) {
+          if (client.url.includes('satqm.github.io/Pro') && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        // If no window is open, open a new one
+        if (clients.openWindow) {
+          return clients.openWindow('https://satqm.github.io/Pro/');
+        }
+      })
+  );
 });
 ```
 
-Additional Icons Setup
-
-Since your manifest references specific icon sizes, you'll need these icon files. Here's a simple HTML file to generate base64 placeholder icons:
+HTML Installation Code (Add to your HTML file before </body>)
 
 ```html
-<!-- icon-generator.html -->
+<!-- PWA Installation Handler -->
+<script>
+// Global variables
+let deferredPrompt;
+let isAppInstalled = false;
+
+// Check if app is already installed
+if (window.matchMedia('(display-mode: standalone)').matches) {
+  isAppInstalled = true;
+  console.log('App is running in standalone mode');
+}
+
+// Create install button
+function createInstallButton() {
+  const installBtn = document.createElement('button');
+  installBtn.id = 'pwa-install-btn';
+  installBtn.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <i class="fas fa-download" style="font-size: 20px;"></i>
+      <div style="text-align: left;">
+        <div style="font-weight: 700; font-size: 14px;">Install CA Tracker</div>
+        <div style="font-size: 11px; opacity: 0.8;">For offline access & home screen</div>
+      </div>
+      <i class="fas fa-times" style="margin-left: 10px; cursor: pointer;" id="close-install-btn"></i>
+    </div>
+  `;
+  
+  installBtn.style.cssText = `
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    z-index: 10000;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    cursor: pointer;
+    animation: slideInRight 0.5s ease, float 3s ease-in-out infinite;
+    max-width: 300px;
+    border: 2px solid rgba(255,255,255,0.2);
+  `;
+  
+  // Add CSS animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  // Add event listeners
+  installBtn.addEventListener('click', installPWA);
+  
+  document.body.appendChild(installBtn);
+  
+  // Close button functionality
+  document.getElementById('close-install-btn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    installBtn.remove();
+    localStorage.setItem('installPromptDismissed', 'true');
+  });
+  
+  // Auto-dismiss after 30 seconds
+  setTimeout(() => {
+    if (document.getElementById('pwa-install-btn')) {
+      installBtn.remove();
+    }
+  }, 30000);
+}
+
+// Install PWA function
+async function installPWA() {
+  if (!deferredPrompt) {
+    showToast('Installation not available. Please try again later.', 'warning');
+    return;
+  }
+  
+  deferredPrompt.prompt();
+  
+  const { outcome } = await deferredPrompt.userChoice;
+  
+  if (outcome === 'accepted') {
+    console.log('User accepted the install prompt');
+    showToast('App installed successfully! Check your home screen.', 'success');
+    
+    // Remove install button
+    const installBtn = document.getElementById('pwa-install-btn');
+    if (installBtn) installBtn.remove();
+    
+    // Remove install menu item
+    const installMenuItem = document.getElementById('install-app-menu');
+    if (installMenuItem) installMenuItem.style.display = 'none';
+  } else {
+    console.log('User dismissed the install prompt');
+    showToast('Installation cancelled. You can install later from the menu.', 'info');
+  }
+  
+  deferredPrompt = null;
+}
+
+// Before install prompt event
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  console.log('✅ PWA Installation is available');
+  
+  // Show install button after 3 seconds (if not dismissed)
+  if (!localStorage.getItem('installPromptDismissed') && !isAppInstalled) {
+    setTimeout(() => {
+      createInstallButton();
+    }, 3000);
+  }
+});
+
+// App installed event
+window.addEventListener('appinstalled', (evt) => {
+  console.log('🎉 App was installed successfully');
+  isAppInstalled = true;
+  
+  // Remove install button if present
+  const installBtn = document.getElementById('pwa-install-btn');
+  if (installBtn) installBtn.remove();
+  
+  // Show success message
+  showToast('App installed successfully! You can now access it from your home screen.', 'success');
+});
+
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Register service worker
+    navigator.serviceWorker.register('/Pro/service-worker.js')
+      .then(registration => {
+        console.log('✅ Service Worker registered with scope:', registration.scope);
+        
+        // Check for updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          console.log('🔄 Service Worker update found:', newWorker);
+          
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('🔄 New content available; refresh to update.');
+              showToast('App update available! Refresh to get the latest version.', 'success');
+            }
+          });
+        });
+      })
+      .catch(error => {
+        console.error('❌ Service Worker registration failed:', error);
+      });
+  });
+}
+
+// Check PWA criteria on page load
+function checkPWAInstallable() {
+  const criteria = {
+    hasSW: 'serviceWorker' in navigator,
+    isHTTPS: window.location.protocol === 'https:' || window.location.hostname === 'localhost',
+    hasManifest: document.querySelector('link[rel="manifest"]') !== null,
+    displayMode: window.matchMedia('(display-mode: standalone)').matches
+  };
+  
+  console.log('📱 PWA Installation Status:', {
+    criteria: criteria,
+    isInstallable: criteria.hasSW && criteria.isHTTPS && criteria.hasManifest,
+    currentDisplayMode: criteria.displayMode ? 'standalone' : 'browser'
+  });
+  
+  return criteria.hasSW && criteria.isHTTPS && criteria.hasManifest;
+}
+
+// Run PWA check
+setTimeout(() => {
+  const isInstallable = checkPWAInstallable();
+  if (isInstallable) {
+    console.log('✅ App meets PWA installation criteria');
+  } else {
+    console.warn('⚠️ App does not meet all PWA installation criteria');
+  }
+}, 1000);
+
+// Add install option to user menu
+document.addEventListener('DOMContentLoaded', function() {
+  const userDropdown = document.getElementById('user-dropdown');
+  if (userDropdown) {
+    const installMenuItem = document.createElement('a');
+    installMenuItem.href = '#';
+    installMenuItem.id = 'install-app-menu';
+    installMenuItem.innerHTML = '<i class="fas fa-mobile-alt"></i> Install App';
+    installMenuItem.style.borderTop = '1px solid #eee';
+    installMenuItem.style.marginTop = '10px';
+    installMenuItem.style.paddingTop = '10px';
+    
+    // Insert at the beginning
+    userDropdown.insertBefore(installMenuItem, userDropdown.firstChild);
+    
+    installMenuItem.addEventListener('click', function(e) {
+      e.preventDefault();
+      installPWA();
+    });
+  }
+});
+
+// Check if running as PWA
+if (window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) {
+  console.log('📱 Running as installed PWA');
+  document.body.classList.add('pwa-mode');
+}
+
+// Helper function to show toast (use your existing function)
+function showToast(message, type) {
+  // Use your existing toast function or implement a simple one
+  const toast = document.getElementById('toast') || (() => {
+    const t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = 'position:fixed;bottom:40px;right:40px;background:white;border-radius:16px;padding:20px;box-shadow:0 20px 40px rgba(0,0,0,0.15);display:flex;align-items:center;gap:20px;z-index:1000;transform:translateX(150%);transition:transform 0.4s ease;border-left:5px solid var(--success);';
+    document.body.appendChild(t);
+    return t;
+  })();
+  
+  toast.innerHTML = `
+    <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}" 
+       style="font-size:28px;color:${type === 'success' ? 'var(--success)' : 'var(--warning)'};"></i>
+    <div>
+      <h4 style="margin:0 0 5px 0;">${type === 'success' ? 'Success!' : 'Info'}</h4>
+      <p style="margin:0;">${message}</p>
+    </div>
+  `;
+  
+  toast.classList.remove('show');
+  setTimeout(() => {
+    toast.classList.add('show');
+  }, 10);
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+</script>
+```
+
+Quick Icons Generator (Save as create-icons.html in your repo)
+
+```html
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Icon Generator</title>
+    <title>Generate Icons for CA Tracker</title>
     <style>
-        canvas { border: 1px solid #ccc; margin: 10px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial; padding: 30px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; margin-bottom: 20px; }
+        h2 { color: #3498db; margin: 30px 0 15px; }
+        .icons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; margin: 20px 0; }
+        .icon-box { text-align: center; padding: 15px; border: 2px solid #e9ecef; border-radius: 12px; background: #f8f9fa; }
+        .icon-canvas { margin-bottom: 10px; }
+        .download-btn { display: inline-block; padding: 8px 15px; background: #3498db; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 10px; }
+        .download-btn:hover { background: #2980b9; }
+        .instructions { background: #e8f4fc; padding: 20px; border-radius: 12px; margin: 30px 0; border-left: 5px solid #3498db; }
+        .note { background: #fff8e1; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 5px solid #f39c12; }
     </style>
 </head>
 <body>
-    <h2>Generate App Icons</h2>
-    <div id="icons"></div>
-    
-    <script>
-        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
-        const container = document.getElementById('icons');
+    <div class="container">
+        <h1>📱 CA Final Tracker - Icon Generator</h1>
         
-        sizes.forEach(size => {
+        <div class="instructions">
+            <h2>Instructions:</h2>
+            <ol>
+                <li>Click each download button to save the icon</li>
+                <li>Save all icons to your GitHub repository root (/Pro/)</li>
+                <li>Filenames must match exactly what's shown</li>
+                <li>Commit and push to GitHub</li>
+            </ol>
+        </div>
+        
+        <div class="note">
+            <strong>Important:</strong> These icons will appear when users install your app to their home screen.
+        </div>
+        
+        <div id="icons-container">
+            <!-- Icons will be generated here -->
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <button onclick="generateAll()" style="padding: 12px 30px; background: #2c3e50; color: white; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; font-weight: 600;">
+                🔄 Regenerate All Icons
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Icon sizes needed for PWA
+        const iconSizes = [
+            { size: 96, filename: 'icon-96.png' },
+            { size: 144, filename: 'icon-144.png' },
+            { size: 180, filename: 'icon-180.png' },
+            { size: 192, filename: 'icon-192.png' },
+            { size: 512, filename: 'icon-512.png' }
+        ];
+        
+        function generateIcon(size, filename) {
+            // Create canvas
             const canvas = document.createElement('canvas');
             canvas.width = size;
             canvas.height = size;
-            canvas.id = `icon-${size}`;
+            canvas.className = 'icon-canvas';
+            canvas.style.border = '1px solid #ddd';
+            canvas.style.borderRadius = '8px';
             
+            // Draw on canvas
             const ctx = canvas.getContext('2d');
             
-            // Draw background
+            // Background gradient
             const gradient = ctx.createLinearGradient(0, 0, size, size);
             gradient.addColorStop(0, '#2c3e50');
             gradient.addColorStop(1, '#3498db');
@@ -568,109 +517,144 @@ Since your manifest references specific icon sizes, you'll need these icon files
             ctx.fillRect(0, 0, size, size);
             
             // Draw book icon
-            ctx.fillStyle = '#fff';
-            ctx.font = `${size/2}px Arial`;
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${size/2}px Arial`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('📚', size/2, size/2);
+            
+            // Use book emoji for larger icons, text for smaller
+            if (size >= 96) {
+                ctx.fillText('📚', size/2, size/2);
+            } else {
+                ctx.fillText('CA', size/2, size/2);
+            }
             
             // Add border
-            ctx.strokeStyle = '#fff';
-            ctx.lineWidth = size/50;
-            ctx.strokeRect(size/20, size/20, size - size/10, size - size/10);
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = Math.max(2, size/30);
+            ctx.strokeRect(size/10, size/10, size - size/5, size - size/5);
             
-            container.appendChild(canvas);
+            return { canvas, filename };
+        }
+        
+        function generateAll() {
+            const container = document.getElementById('icons-container');
+            container.innerHTML = '<h2>Generated Icons:</h2><div class="icons-grid"></div>';
+            const grid = container.querySelector('.icons-grid');
             
-            // Create download link
-            const link = document.createElement('a');
-            link.download = `icon-${size}x${size}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.textContent = `Download ${size}x${size}`;
-            link.style.display = 'block';
-            container.appendChild(link);
-        });
+            iconSizes.forEach(iconInfo => {
+                const { canvas, filename } = generateIcon(iconInfo.size, iconInfo.filename);
+                
+                // Create download link
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = filename;
+                link.className = 'download-btn';
+                link.textContent = `Download ${filename}`;
+                
+                // Create box
+                const box = document.createElement('div');
+                box.className = 'icon-box';
+                box.innerHTML = `
+                    <div style="font-weight: 600; margin-bottom: 10px;">${iconInfo.size}×${iconInfo.size}</div>
+                `;
+                box.appendChild(canvas);
+                box.appendChild(document.createElement('br'));
+                box.appendChild(link);
+                
+                grid.appendChild(box);
+            });
+        }
+        
+        // Generate on page load
+        window.onload = generateAll;
     </script>
 </body>
 </html>
 ```
 
-Instructions for Deployment:
+Step-by-Step Deployment Guide:
 
-1. Save the manifest.json in your project root
-2. Save the service-worker.js in your project root
-3. Generate icons using the icon generator HTML or create them with:
-   · Background: Gradient from #2c3e50 to #3498db
-   · Icon: White book emoji (📚)
-   · Border: White border
-4. Update your HTML file to include proper service worker registration:
+1. Add Files to Your GitHub Repository (/Pro/ folder)
 
-```html
-<script>
-// PWA Installation
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/CA2.O/service-worker.js')
-      .then(registration => {
-        console.log('ServiceWorker registered:', registration);
-        
-        // Check for updates
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          console.log('ServiceWorker update found:', newWorker);
-          
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('New content available; please refresh.');
-              showToast('App update available! Refresh to update.', 'success');
-            }
-          });
-        });
-      })
-      .catch(error => {
-        console.error('ServiceWorker registration failed:', error);
-      });
-  });
+Create these files:
+
+· manifest.json (copy from above)
+· service-worker.js (copy from above)
+· create-icons.html (optional, for generating icons)
+
+2. Generate and Upload Icons
+
+Run the create-icons.html file in your browser and download these 5 icons:
+
+· icon-96.png
+· icon-144.png
+· icon-180.png
+· icon-192.png
+· icon-512.png
+
+Upload them to your GitHub repository in the /Pro/ folder.
+
+3. Update Your HTML File
+
+Add the installation script (the large script above) to your main index.html file, just before the closing </body> tag.
+
+4. Test Installation
+
+1. Visit: https://satqm.github.io/Pro/
+2. Wait 3-5 seconds for install button to appear (bottom-right)
+3. Click "Install CA Tracker"
+4. Or look for the install icon (📥) in Chrome's address bar
+
+5. Troubleshooting Checklist
+
+If installation isn't working:
+
+1. Clear browser cache: Ctrl+Shift+R (hard reload)
+2. Check console errors: F12 → Console tab
+3. Verify files exist:
+   · https://satqm.github.io/Pro/manifest.json
+   · https://satqm.github.io/Pro/service-worker.js
+   · https://satqm.github.io/Pro/icon-192.png
+4. Test with Lighthouse: F12 → Lighthouse tab → Generate report
+
+6. Quick Test Commands (in browser console)
+
+```javascript
+// Check if service worker is registered
+navigator.serviceWorker.controller
+
+// Check manifest
+const manifest = document.querySelector('link[rel="manifest"]');
+console.log('Manifest:', manifest?.href);
+
+// Check PWA criteria
+console.log('HTTPS:', window.location.protocol === 'https:');
+console.log('Service Worker:', 'serviceWorker' in navigator);
+console.log('Manifest:', document.querySelector('link[rel="manifest"]') !== null);
+
+// Trigger install prompt manually
+if (window.deferredPrompt) {
+  window.deferredPrompt.prompt();
 }
-
-// Install prompt
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  
-  // Show install button after 30 seconds
-  setTimeout(() => {
-    if (!localStorage.getItem('installPromptDismissed')) {
-      showToast('Install this app for offline access!', 'success');
-    }
-  }, 30000);
-});
-
-// Install function
-async function installPWA() {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
-    } else {
-      console.log('User dismissed the install prompt');
-    }
-    deferredPrompt = null;
-  }
-}
-</script>
 ```
 
-Key Features of this Setup:
+Expected Results:
 
-1. Versioned Caching: Automatically updates when you change APP_VERSION
-2. Smart Fetch Strategies: Different strategies for different resources
-3. Offline Support: App works completely offline
-4. Scheduled Notifications: Study reminders at optimal times
-5. Background Sync: Ready for future data sync features
-6. Update Management: Automatically handles app updates
-7. Error Handling: Robust error and rejection handling
-8. Message System: Communication between app and service worker
+After implementing everything, visiting https://satqm.github.io/Pro/ should:
 
-This setup makes your CA Final Pro Tracker a fully functional Progressive Web App with excellent offline capabilities and professional installation experience.
+1. Show install button after 3 seconds (bottom-right corner)
+2. Display "Install" option in Chrome menu (3 dots → "Install CA Final Pro Tracker")
+3. Allow installation as a standalone app
+4. Show proper icon on home screen after installation
+5. Work offline once installed
+
+The key changes for your new URL:
+
+· Updated all paths to /Pro/
+· Used full HTTPS URLs in manifest for GitHub Pages
+· Simplified service worker for better compatibility
+· Added user-friendly install button with instructions
+· Included comprehensive error handling
+
+Try it now and let me know if you see the install prompt!
