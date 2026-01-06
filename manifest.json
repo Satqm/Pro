@@ -1,33 +1,116 @@
 {
-  "name": "CA Final Accountability Tracker",
+  "name": "CA Final Pro Tracker",
   "short_name": "CA Pro Tracker",
-  "description": "Professional offline study tracker for CA Final exams with advanced analytics",
-  "start_url": "https://satqm.github.io/CA2.O/",
+  "description": "Professional Offline Study Management System for CA Final Exams",
+  "start_url": "/CA2.O/",
+  "scope": "/CA2.O/",
   "display": "standalone",
   "background_color": "#2c3e50",
   "theme_color": "#2c3e50",
+  "orientation": "portrait-primary",
+  "categories": ["education", "productivity"],
   "icons": [
     {
-      "src": "https://img.icons8.com/color/96/000000/book-and-pencil.png",
+      "src": "icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-96x96.png",
       "sizes": "96x96",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "https://img.icons8.com/color/144/000000/book-and-pencil.png",
+      "src": "icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-144x144.png",
       "sizes": "144x144",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "https://img.icons8.com/color/192/000000/book-and-pencil.png",
+      "src": "icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "https://img.icons8.com/color/512/000000/book-and-pencil.png",
+      "src": "icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
-  "permissions": ["notifications"],
-  "orientation": "portrait"
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard View"
+    },
+    {
+      "src": "screenshot2.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile View"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View study progress and analytics",
+      "url": "/CA2.O/#dashboard",
+      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Add Target",
+      "short_name": "Target",
+      "description": "Add new study target",
+      "url": "/CA2.O/#planning",
+      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Subjects",
+      "short_name": "Subjects",
+      "description": "View subjects and topics",
+      "url": "/CA2.O/#subjects",
+      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://satqm.github.io/CA2.O/manifest.json"
+    }
+  ],
+  "prefer_related_applications": false,
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "handle_links": "preferred",
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
 }
