@@ -5243,6 +5243,60 @@
                 });
             });
         }
+        // PWA Installation
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/CA2.O/service-worker.js')
+      .then(registration => {
+        console.log('ServiceWorker registered:', registration);
+        
+        // Check for updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          console.log('ServiceWorker update found:', newWorker);
+          
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('New content available; please refresh.');
+              showToast('App update available! Refresh to update.', 'success');
+            }
+          });
+        });
+      })
+      .catch(error => {
+        console.error('ServiceWorker registration failed:', error);
+      });
+  });
+}
+
+// Install prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  // Show install button after 30 seconds
+  setTimeout(() => {
+    if (!localStorage.getItem('installPromptDismissed')) {
+      showToast('Install this app for offline access!', 'success');
+    }
+  }, 30000);
+});
+
+// Install function
+async function installPWA() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    } else {
+      console.log('User dismissed the install prompt');
+    }
+    deferredPrompt = null;
+  }
+}
     </script>
 </body>
 </html>
+
