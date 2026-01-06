@@ -4267,6 +4267,78 @@ if (window.location.protocol !== 'https:' && window.location.hostname !== 'local
                 });
             });
         }
+        // Add instant save for actual hour inputs
+document.querySelectorAll('.actual-time-input input').forEach(input => {
+    input.addEventListener('change', function() {
+        const id = this.id.replace('time-', '');
+        const parts = id.split('-');
+        const subjectId = parts[0];
+        const topicName = parts.slice(1, -1).join(' ').replace(/-/g, ' ');
+        const subtopicName = parts[parts.length - 1].replace(/-/g, ' ');
+        
+        const hours = parseFloat(this.value) || 0;
+        
+        if (hours >= 0) {
+            // Ensure structure exists
+            if (!userProgress.subjects[subjectId]) {
+                userProgress.subjects[subjectId] = { 
+                    topics: {}, 
+                    completedTopics: 0, 
+                    totalTopics: syllabusData[subjectId]?.topics?.length || 0 
+                };
+            }
+            if (!userProgress.subjects[subjectId].topics[topicName]) {
+                userProgress.subjects[subjectId].topics[topicName] = { 
+                    status: 'not-started', 
+                    subtopics: {} 
+                };
+            }
+            if (!userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName]) {
+                userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName] = { 
+                    actualHours: 0, 
+                    completed: false 
+                };
+            }
+            
+            // Save instantly
+            userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = hours;
+            userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = hours > 0;
+            
+            // Auto-update topic status
+            const topic = userProgress.subjects[subjectId].topics[topicName];
+            const allSubtopics = Object.values(topic.subtopics || {});
+            
+            if (allSubtopics.length > 0 && allSubtopics.every(st => st.completed)) {
+                topic.status = 'completed';
+            } else if (allSubtopics.some(st => st.actualHours > 0)) {
+                topic.status = 'inprogress';
+            } else {
+                topic.status = 'not-started';
+            }
+            
+            // Save to storage
+            DataStorage.save('progress', userProgress);
+            
+            // Update UI immediately
+            const topicStatusElement = document.querySelector(`.topic-status[data-subject="${subjectId}"][data-topic="${topicName}"]`);
+            if (topicStatusElement) {
+                topicStatusElement.className = `topic-status status-${topic.status}`;
+                const icon = topic.status === 'completed' ? 'check-circle' : 
+                           topic.status === 'inprogress' ? 'spinner' : 'circle';
+                topicStatusElement.innerHTML = `<i class="fas fa-${icon}"></i> ${
+                    topic.status === 'completed' ? 'Completed' : 
+                    topic.status === 'inprogress' ? 'In Progress' : 'Not Started'
+                }`;
+            }
+            
+            // Update dashboard
+            updateDashboard();
+            
+            // Show confirmation
+            showToast(`Saved: ${subtopicName} - ${hours} hours`, 'success');
+        }
+    });
+});
         
         function renderSubject(subjectId, subjectData) {
             const plannedHours = userStudyPlan?.subjectHours?.[subjectId] || 0;
@@ -4326,9 +4398,8 @@ if (window.location.protocol !== 'https:' && window.location.hostname !== 'local
                     <div class="subtopic-list">`;
                 
                 topic.subtopics.forEach(subtopic => {
-                    const subtopicProgress = topicProgress.subtopics?.[subtopic.name] || { actualHours: 0, completed: false };
-                    const hours = subtopicProgress.actualHours || 0;
-                    const completed = subtopicProgress.completed || false;
+                   const hours = subtopicProgress.actualHours || 0;
+// Make sure we load the saved hours, not default to 0
                     
                     const subjectPlannedHours = userStudyPlan?.subjectHours?.[subjectId] || 0;
                     const suggestedHours = (topic.weightage / 100) * (subtopic.weight / 100) * subjectPlannedHours;
@@ -4368,49 +4439,54 @@ if (window.location.protocol !== 'https:' && window.location.hostname !== 'local
             return html;
         }
         
-        function toggleTopicStatus(subjectId, topicName) {
-            if (!userProgress.subjects[subjectId] || !userProgress.subjects[subjectId].topics[topicName]) {
-                return;
-            }
-            
-            const topic = userProgress.subjects[subjectId].topics[topicName];
-            const currentStatus = topic.status;
-            
-            const nextStatus = currentStatus === 'not-started' ? 'inprogress' : 
-                             currentStatus === 'inprogress' ? 'completed' : 'not-started';
-            
-            topic.status = nextStatus;
-            
-           if (nextStatus === 'completed') {
-    Object.keys(topic.subtopics).forEach(subtopicName => {
-        const subtopic = topic.subtopics[subtopicName];
-        
-        // Get the actual hours from the input field
-        const inputId = `time-${subjectId}-${topicName.replace(/\s+/g, '-')}-${subtopicName.replace(/\s+/g, '-')}`;
-        const inputElement = document.getElementById(inputId);
-        
-        if (inputElement) {
-            subtopic.actualHours = parseFloat(inputElement.value) || 0;
+function toggleTopicStatus(subjectId, topicName) {
+    if (!userProgress.subjects[subjectId] || !userProgress.subjects[subjectId].topics[topicName]) {
+        return;
+    }
+    
+    const topic = userProgress.subjects[subjectId].topics[topicName];
+    const currentStatus = topic.status;
+    
+    // If trying to mark completed as not-started, ask for confirmation
+    if (currentStatus === 'completed') {
+        if (!confirm('Are you sure you want to mark this topic as not started? This will reset all subtopic progress.')) {
+            return;
         }
         
-        subtopic.completed = true;
-    });
-} else if (nextStatus === 'not-started') {
-    Object.keys(topic.subtopics).forEach(subtopicName => {
-        const subtopic = topic.subtopics[subtopicName];
-        subtopic.completed = false;
-    });
+        // Reset all subtopics
+        Object.keys(topic.subtopics).forEach(subtopicName => {
+            topic.subtopics[subtopicName].completed = false;
+            // Keep the actual hours, just mark as not completed
+        });
+        topic.status = 'not-started';
+        
+    } else if (currentStatus === 'not-started') {
+        // Mark as in-progress
+        topic.status = 'inprogress';
+    } else if (currentStatus === 'inprogress') {
+        // Mark as completed - check if all subtopics have hours
+        const allSubtopics = Object.values(topic.subtopics || {});
+        const hasHours = allSubtopics.some(st => st.actualHours > 0);
+        
+        if (!hasHours && !confirm('No actual hours recorded. Mark as completed anyway?')) {
+            return;
+        }
+        
+        // Mark all subtopics as completed
+        Object.keys(topic.subtopics).forEach(subtopicName => {
+            topic.subtopics[subtopicName].completed = true;
+        });
+        topic.status = 'completed';
+    }
+    
+    updateCompletedTopics(subjectId);
+    
+    DataStorage.save('progress', userProgress);
+    loadSubjectContent();
+    updateDashboard();
+    
+    showToast(`Topic marked as ${topic.status}`, 'success');
 }
-            
-            updateCompletedTopics(subjectId);
-            
-            DataStorage.save('progress', userProgress);
-            loadSubjectContent();
-            updateDashboard();
-            
-            showToast(`Topic marked as ${nextStatus}`, 'success');
-        }
-        
         function updateCompletedTopics(subjectId) {
             if (!userProgress.subjects[subjectId]) return;
             
@@ -5576,6 +5652,7 @@ function showToast(message, type) {
 </script>
 </body>
 </html>
+
 
 
 
