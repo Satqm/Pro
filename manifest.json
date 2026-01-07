@@ -1,51 +1,68 @@
 {
   "name": "CA Final Pro Tracker",
   "short_name": "CA Tracker",
-  "description": "Professional Offline Study Management System",
+  "description": "Professional Offline Study Management System for CA Final Exams",
   "start_url": "https://satqm.github.io/Pro/",
-  "scope": "https://satqm.github.io/Pro/",
+  "scope": "/Pro/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
   "background_color": "#2c3e50",
   "theme_color": "#2c3e50",
-  "orientation": "any",
   "categories": ["education", "productivity"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "id": "/Pro/",
+  
   "icons": [
     {
-      "src": "https://satqm.github.io/Pro/icon-192.png",
-      "type": "image/png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://satqm.github.io/Pro/icon-512.png",
-      "type": "image/png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://satqm.github.io/Pro/icon-180.png",
       "type": "image/png",
-      "sizes": "180x180",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://satqm.github.io/Pro/icon-144.png",
-      "type": "image/png",
-      "sizes": "144x144",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://satqm.github.io/Pro/icon-96.png",
-      "type": "image/png",
-      "sizes": "96x96",
       "purpose": "any maskable"
     }
   ],
-  "prefer_related_applications": false,
-  "related_applications": [
+  
+  "screenshots": [
     {
-      "platform": "web",
-      "url": "https://satqm.github.io/Pro/"
+      "src": "https://via.placeholder.com/1280x720/2c3e50/ffffff?text=CA+Final+Tracker+Dashboard",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard View"
+    },
+    {
+      "src": "https://via.placeholder.com/750x1334/2c3e50/ffffff?text=Mobile+View",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile View"
     }
-  ]
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Open Dashboard",
+      "url": "/Pro/?source=pwa",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Add Target",
+      "short_name": "Target",
+      "description": "Add new study target",
+      "url": "/Pro/?page=planning&action=add",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  
+  "prefer_related_applications": false,
+  "related_applications": []
 }
