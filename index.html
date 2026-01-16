@@ -2437,11 +2437,12 @@
                 <p>Professional Offline Study Management System</p>
             </div>
             
-            <div class="demo-video">
-                <a href="https://youtube.com/@__satyamkumar?si=yTdGDrWa-VE2_R5m" target="_blank">
-                    <i class="fab fa-youtube"></i> Watch Demo Video
-                </a>
-            </div>
+          <div class="demo-video">
+    <a href="https://youtu.be/VqMSwJIjfoM?si=YNhAxuaEiaeACs8o" target="_blank">
+        <i class="fab fa-youtube"></i> Watch Demo Video
+    </a>
+</div>
+
             
             <div class="name-input-section">
                 <input type="text" 
@@ -4598,37 +4599,38 @@ static async save(storeName, data) {
         }
         
         function loadDefaultContent() {
-            // Add default videos if none exist
-            if (userVideos.length === 0) {
-                userVideos = [
-                    {
-                        id: Date.now(),
-                        title: "Financial Reporting - Complete Guide",
-                        subject: "paper1",
-                        link: "https://youtube.com/playlist?list=example1",
-                        author: "CA Expert",
-                        addedDate: new Date().toISOString()
-                    }
-                ];
-                DataStorage.save('videos', userVideos);
-            }
-            
-            // Add default resources if none exist
-            if (userResources.length === 0) {
-                userResources = [
-                    {
-                        id: Date.now(),
-                        title: "FR Formula Sheet",
-                        subject: "paper1",
-                        type: "formulas",
-                        link: "#",
-                        author: "Satyam Kumar",
-                        addedDate: new Date().toISOString()
-                    }
-                ];
-                DataStorage.save('resources', userResources);
-            }
+   // Add default videos if none exist
+if (userVideos.length === 0) {
+    userVideos = [
+        {
+            id: Date.now(),
+            title: "Financial Reporting - By PW",
+            subject: "paper1",
+            link: "https://youtube.com/playlist?list=PLgE50OYPyT6pZTMhQ4de-Rh-mOrT2O3l_&si=RwB8IOWC2q9ZN441",
+            author: "CA Expert",
+            addedDate: new Date().toISOString()
         }
+    ];
+    DataStorage.save('videos', userVideos);
+}
+
+            
+  // Add default resources if none exist
+if (userResources.length === 0) {
+    userResources = [
+        {
+            id: Date.now(),
+            title: "ICAI Study Material",
+            subject: "paper1",
+            type: "formulas",
+            link: "https://boslive.icai.org/study_material_new_paper_details.php?c=final&language=English&year=Applicable%20for%20May%202026%20Exam%20Onwards",
+            author: "ICAI",
+            addedDate: new Date().toISOString()
+        }
+    ];
+    DataStorage.save('resources', userResources);
+}
+
         
         function updateUserUI() {
             if (currentUser) {
