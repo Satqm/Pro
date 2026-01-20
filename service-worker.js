@@ -1,9 +1,11 @@
-const CACHE_NAME = 'ca-final-tracker-v4';
-const APP_PREFIX = 'CAFINAL_';
+const CACHE_NAME = 'ca-final-tracker-v5'; // Incremented version
+const APP_PREFIX = 'ca-final-tracker-'; // Match the prefix!
 const urlsToCache = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 // Install event - cache resources
@@ -15,81 +17,105 @@ self.addEventListener('install', event => {
         console.log('[Service Worker] Caching app shell');
         return cache.addAll(urlsToCache);
       })
-      .then(() => self.skipWaiting())
+      .then(() => {
+        console.log('[Service Worker] Skip waiting');
+        return self.skipWaiting();
+      })
+      .catch(error => {
+        console.error('[Service Worker] Install failed:', error);
+      })
   );
 });
 
-// Activate event - clean up old caches
+// Activate event - clean up old caches (SINGLE LISTENER)
 self.addEventListener('activate', event => {
   console.log('[Service Worker] Activate');
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName.startsWith(APP_PREFIX) && cacheName !== CACHE_NAME) {
-            console.log('[Service Worker] Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    Promise.all([
+      // Clean old caches
+      caches.keys().then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            if (cacheName.startsWith(APP_PREFIX) && cacheName !== CACHE_NAME) {
+              console.log('[Service Worker] Deleting old cache:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      }),
+      // Claim clients
+      self.clients.claim()
+    ])
+    .then(() => {
+      console.log('[Service Worker] Activated and claimed clients');
+    })
+    .catch(error => {
+      console.error('[Service Worker] Activation failed:', error);
+    })
   );
 });
 
-// Fetch event - serve from cache or network
+// Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', event => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') return;
-  
-  // Skip chrome-extension requests
-  if (event.request.url.startsWith('chrome-extension://')) return;
-  
+
+  // Skip chrome-extension and other non-http(s) requests
+  if (!event.request.url.startsWith('http')) return;
+
   event.respondWith(
     caches.match(event.request)
-      .then(response => {
-        // Cache hit - return response
-        if (response) {
-          return response;
+      .then(cachedResponse => {
+        if (cachedResponse) {
+          console.log('[Service Worker] Serving from cache:', event.request.url);
+          return cachedResponse;
         }
-        
+
         // Clone the request
-        const fetchRequest = event.request.clone();
-        
-        return fetch(fetchRequest).then(response => {
-          // Check if we received a valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
+        return fetch(event.request.clone())
+          .then(response => {
+            // Check if valid response
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            // Clone and cache the response
+            const responseToCache = response.clone();
+
+            caches.open(CACHE_NAME)
+              .then(cache => {
+                cache.put(event.request, responseToCache);
+              })
+              .catch(error => {
+                console.error('[Service Worker] Cache put failed:', error);
+              });
+
             return response;
-          }
-          
-          // Clone the response
-          const responseToCache = response.clone();
-          
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(event.request, responseToCache);
-            });
-          
-          return response;
-        });
+          })
+          .catch(error => {
+            console.error('[Service Worker] Fetch failed:', error);
+            // Return offline page if available
+            return caches.match('./index.html');
+          });
       })
   );
 });
 
 // Notification click handler
 self.addEventListener('notificationclick', event => {
-  console.log('[Service Worker] Notification click received.');
+  console.log('[Service Worker] Notification click received');
   event.notification.close();
-  
+
   event.waitUntil(
-    clients.matchAll({type: 'window'})
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
       .then(clientList => {
-        // Focus existing window if available
+        // Focus existing window
         for (const client of clientList) {
-          if (client.url === self.location.origin && 'focus' in client) {
+          if (client.url.includes(self.registration.scope) && 'focus' in client) {
             return client.focus();
           }
         }
-        // Open new window if none exists
+        // Open new window
         if (clients.openWindow) {
           return clients.openWindow('./');
         }
@@ -97,71 +123,15 @@ self.addEventListener('notificationclick', event => {
   );
 });
 
-// Notification close handler
-self.addEventListener('notificationclose', event => {
-  console.log('[Service Worker] Notification closed:', event.notification.tag);
-});
+// Message handler for communication with main app
+self.addEventListener('message', event => {
+  console.log('[Service Worker] Message received:', event.data);
 
-// Schedule daily notifications
-const scheduleNotifications = () => {
-  // Check if notifications are supported
-  if (!self.Notification || !self.registration) return;
-  
-  // Check permission
-  if (Notification.permission !== 'granted') return;
-  
-  // Morning notification at 9:00 AM
-  const morningTime = new Date();
-  morningTime.setHours(9, 0, 0, 0);
-  if (morningTime < new Date()) {
-    morningTime.setDate(morningTime.getDate() + 1);
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
   }
-  
-  // Evening notification at 8:00 PM
-  const eveningTime = new Date();
-  eveningTime.setHours(20, 0, 0, 0);
-  if (eveningTime < new Date()) {
-    eveningTime.setDate(eveningTime.getDate() + 1);
-  }
-  
-  const now = Date.now();
-  const morningDelay = morningTime.getTime() - now;
-  const eveningDelay = eveningTime.getTime() - now;
-  
-  // Schedule morning notification
-  if (morningDelay > 0) {
-    setTimeout(() => {
-      self.registration.showNotification('CA Final Pro Tracker', {
-        body: '📚 Good morning! Time to plan your study targets for today.',
-        icon: './icon-192.png',
-        badge: './icon-192.png',
-        tag: 'morning-reminder',
-        requireInteraction: false,
-        vibrate: [200, 100, 200]
-      });
-      
-      // Reschedule for next day
-      scheduleNotifications();
-    }, morningDelay);
-  }
-  
-  // Schedule evening notification
-  if (eveningDelay > 0) {
-    setTimeout(() => {
-      self.registration.showNotification('CA Final Pro Tracker', {
-        body: '📊 Evening check! Update your study hours and track progress.',
-        icon: './icon-192.png',
-        badge: './icon-192.png',
-        tag: 'evening-reminder',
-        requireInteraction: false,
-        vibrate: [200, 100, 200]
-      });
-    }, eveningDelay);
-  }
-};
 
-// Run when service worker is activated
-self.addEventListener('activate', event => {
-  console.log('[Service Worker] Activated');
-  event.waitUntil(scheduleNotifications());
+  if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
+    self.registration.showNotification(event.data.title, event.data.options);
+  }
 });
