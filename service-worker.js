@@ -1,11 +1,12 @@
-const CACHE_NAME = 'ca-final-tracker-v5'; // Incremented version
-const APP_PREFIX = 'ca-final-tracker-'; // Match the prefix!
+const CACHE_NAME = 'CAFINAL_v4';
+const APP_PREFIX = 'CAFINAL_';
 const urlsToCache = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png'
+  '/Pro/',
+  '/Pro/index.html',
+  '/Pro/manifest.json',
+  '/Pro/icon-192.png',
+  '/Pro/icon-512.png'
+  // Add any other assets (CSS, JS files) you want cached
 ];
 
 // Install event - cache resources
@@ -22,36 +23,32 @@ self.addEventListener('install', event => {
         return self.skipWaiting();
       })
       .catch(error => {
-        console.error('[Service Worker] Install failed:', error);
+        console.error('[Service Worker] Cache failed:', error);
       })
   );
 });
 
-// Activate event - clean up old caches (SINGLE LISTENER)
+// Activate event - clean up old caches
 self.addEventListener('activate', event => {
   console.log('[Service Worker] Activate');
   event.waitUntil(
-    Promise.all([
-      // Clean old caches
-      caches.keys().then(cacheNames => {
+    caches.keys()
+      .then(cacheNames => {
         return Promise.all(
-          cacheNames.map(cacheName => {
-            if (cacheName.startsWith(APP_PREFIX) && cacheName !== CACHE_NAME) {
+          cacheNames
+            .filter(cacheName => 
+              cacheName.startsWith(APP_PREFIX) && cacheName !== CACHE_NAME
+            )
+            .map(cacheName => {
               console.log('[Service Worker] Deleting old cache:', cacheName);
               return caches.delete(cacheName);
-            }
-          })
+            })
         );
-      }),
-      // Claim clients
-      self.clients.claim()
-    ])
-    .then(() => {
-      console.log('[Service Worker] Activated and claimed clients');
-    })
-    .catch(error => {
-      console.error('[Service Worker] Activation failed:', error);
-    })
+      })
+      .then(() => {
+        console.log('[Service Worker] Claiming clients');
+        return self.clients.claim();
+      })
   );
 });
 
@@ -60,28 +57,32 @@ self.addEventListener('fetch', event => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') return;
 
-  // Skip chrome-extension and other non-http(s) requests
+  // Skip chrome-extension and non-http(s) requests
   if (!event.request.url.startsWith('http')) return;
 
   event.respondWith(
     caches.match(event.request)
-      .then(cachedResponse => {
-        if (cachedResponse) {
+      .then(response => {
+        // Cache hit - return response
+        if (response) {
           console.log('[Service Worker] Serving from cache:', event.request.url);
-          return cachedResponse;
+          return response;
         }
 
         // Clone the request
-        return fetch(event.request.clone())
+        const fetchRequest = event.request.clone();
+
+        return fetch(fetchRequest)
           .then(response => {
-            // Check if valid response
+            // Check if we received a valid response
             if (!response || response.status !== 200 || response.type !== 'basic') {
               return response;
             }
 
-            // Clone and cache the response
+            // Clone the response
             const responseToCache = response.clone();
 
+            // Cache the new response
             caches.open(CACHE_NAME)
               .then(cache => {
                 cache.put(event.request, responseToCache);
@@ -94,8 +95,8 @@ self.addEventListener('fetch', event => {
           })
           .catch(error => {
             console.error('[Service Worker] Fetch failed:', error);
-            // Return offline page if available
-            return caches.match('./index.html');
+            // Return offline page or cached fallback if available
+            return caches.match('/Pro/index.html');
           });
       })
   );
@@ -103,24 +104,29 @@ self.addEventListener('fetch', event => {
 
 // Notification click handler
 self.addEventListener('notificationclick', event => {
-  console.log('[Service Worker] Notification click received');
+  console.log('[Service Worker] Notification click received.');
   event.notification.close();
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true })
       .then(clientList => {
-        // Focus existing window
+        // Focus existing window if available
         for (const client of clientList) {
-          if (client.url.includes(self.registration.scope) && 'focus' in client) {
+          if (client.url.includes('/Pro/') && 'focus' in client) {
             return client.focus();
           }
         }
-        // Open new window
+        // Open new window if none exists
         if (clients.openWindow) {
-          return clients.openWindow('./');
+          return clients.openWindow('/Pro/');
         }
       })
   );
+});
+
+// Notification close handler
+self.addEventListener('notificationclose', event => {
+  console.log('[Service Worker] Notification closed:', event.notification.tag);
 });
 
 // Message handler for communication with main app
@@ -131,7 +137,9 @@ self.addEventListener('message', event => {
     self.skipWaiting();
   }
 
+  // Handle notification requests from main app
   if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
-    self.registration.showNotification(event.data.title, event.data.options);
+    const { title, options } = event.data;
+    self.registration.showNotification(title, options);
   }
 });
