@@ -1,0 +1,1557 @@
+{
+  "user": [
+    {
+      "name": "Satyam Kumar",
+      "initials": "SK"
+    }
+  ],
+  "progress": [
+    {
+      "subjects": {
+        "paper1": {
+          "completedTopics": 6,
+          "totalTopics": 14,
+          "topics": {
+            "Introduction to GPFS": {
+              "status": "completed",
+              "totalHours": 7,
+              "subtopics": {
+                "Ind AS 1 basics": {
+                  "actualHours": 2,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.169Z",
+                  "autoUpdated": true
+                },
+                "Schedule III Div II": {
+                  "actualHours": 3,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.169Z",
+                  "autoUpdated": false
+                },
+                "Applicability criteria": {
+                  "actualHours": 2,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.169Z",
+                  "autoUpdated": true
+                }
+              }
+            },
+            "Conceptual Framework": {
+              "status": "completed",
+              "totalHours": 2,
+              "subtopics": {
+                "Application to GPFS": {
+                  "actualHours": 2,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.169Z",
+                  "autoUpdated": true
+                }
+              }
+            },
+            "Presentation of Items": {
+              "status": "inprogress",
+              "totalHours": 1,
+              "subtopics": {
+                "Ind AS 1: Presentation": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-02-10T06:38:43.169Z"
+                },
+                "Ind AS 34: Interim": {
+                  "actualHours": 1,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.169Z",
+                  "autoUpdated": true
+                },
+                "Ind AS 7: Cash Flows": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-02-10T06:38:43.169Z"
+                }
+              }
+            },
+            "Measurement Policies": {
+              "status": "inprogress",
+              "totalHours": 2,
+              "subtopics": {
+                "Ind AS 8: Policies/Errors": {
+                  "actualHours": 2,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.169Z",
+                  "autoUpdated": true
+                },
+                "Ind AS 10: Events": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-02-10T06:38:43.169Z"
+                },
+                "Ind AS 113: Fair Value": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-02-10T06:38:43.169Z"
+                }
+              }
+            },
+            "Income Statement": {
+              "status": "completed",
+              "totalHours": 3,
+              "subtopics": {
+                "Ind AS 115: Revenue": {
+                  "actualHours": 3,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.169Z",
+                  "autoUpdated": true
+                }
+              }
+            },
+            "Assets": {
+              "status": "completed",
+              "totalHours": 16,
+              "subtopics": {
+                "Ind AS 2: Inventories": {
+                  "actualHours": 2,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.169Z",
+                  "autoUpdated": true
+                },
+                "Ind AS 16: PPE": {
+                  "actualHours": 4,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T09:23:14.503Z",
+                  "autoUpdated": true
+                },
+                "Ind AS 116: Leases": {
+                  "actualHours": 4,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.169Z",
+                  "autoUpdated": true
+                },
+                "Ind AS 23: Borrowing Costs": {
+                  "actualHours": 2,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z",
+                  "autoUpdated": true
+                },
+                "Ind AS 36: Impairment": {
+                  "actualHours": 2,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z",
+                  "autoUpdated": true
+                },
+                "Ind AS 38: Intangibles": {
+                  "actualHours": 2,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z",
+                  "autoUpdated": true
+                }
+              }
+            },
+            "Liabilities": {
+              "status": "inprogress",
+              "totalHours": 7,
+              "subtopics": {
+                "Ind AS 19: Employee Benefits": {
+                  "actualHours": 7,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T09:19:38.954Z",
+                  "autoUpdated": true
+                },
+                "Ind AS 37: Provisions": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z"
+                }
+              }
+            },
+            "Items Impacting FS": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Ind AS 12: Income Taxes": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z"
+                },
+                "Ind AS 21: FX Rates": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z"
+                }
+              }
+            },
+            "Disclosures": {
+              "status": "inprogress",
+              "totalHours": 1,
+              "subtopics": {
+                "Ind AS 24: Related Parties": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z"
+                },
+                "Ind AS 33: EPS": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z"
+                },
+                "Ind AS 108: Segments": {
+                  "actualHours": 1,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z",
+                  "autoUpdated": true
+                }
+              }
+            },
+            "Financial Instruments": {
+              "status": "inprogress",
+              "totalHours": 3,
+              "subtopics": {
+                "Ind AS 32/107/109 Classification": {
+                  "actualHours": 3,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z",
+                  "autoUpdated": true
+                },
+                "Derivatives/Hedge Accounting": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z"
+                }
+              }
+            },
+            "Group Accounting": {
+              "status": "completed",
+              "totalHours": 3,
+              "subtopics": {
+                "Ind AS 103: Business Combos": {
+                  "actualHours": 2,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z",
+                  "autoUpdated": true
+                },
+                "Ind AS 110/111/28: Consolidation": {
+                  "actualHours": 1,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z",
+                  "autoUpdated": true
+                }
+              }
+            },
+            "First-time Adoption": {
+              "status": "completed",
+              "totalHours": 2,
+              "subtopics": {
+                "Ind AS 101": {
+                  "actualHours": 2,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z",
+                  "autoUpdated": true
+                }
+              }
+            },
+            "FS Analysis": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Ind AS based analysis": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z"
+                }
+              }
+            },
+            "Ethics & Tech": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Ethical issues": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z"
+                },
+                "Technology evolution": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-02-10T06:38:43.170Z"
+                }
+              }
+            }
+          }
+        },
+        "paper2": {
+          "completedTopics": 0,
+          "totalTopics": 11,
+          "topics": {
+            "Financial Policy": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "CFO role + Value creation": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                },
+                "Strategic framework": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                }
+              }
+            },
+            "Risk Management": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Risk types + VaR": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                }
+              }
+            },
+            "Advanced Cap Budgeting": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Inflation/Tech impact": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                },
+                "Risk methods + APV": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                }
+              }
+            },
+            "Security Analysis": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Fundamental Analysis": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                },
+                "Technical Analysis + EMH": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                }
+              }
+            },
+            "Security Valuation": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Equity/Pref/Debentures": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                },
+                "CAPM + Risk premium": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                }
+              }
+            },
+            "Portfolio Management": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Analysis/Selection/Revision": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                },
+                "Securitization + Mutual Funds": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                }
+              }
+            },
+            "Derivatives": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Forwards/Futures/Options": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                },
+                "Swaps + Greeks": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                }
+              }
+            },
+            "Forex Risk": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "FX factors + SWIFT": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                }
+              }
+            },
+            "Business Valuation": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Asset/Earning/Cashflow models": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                },
+                "CAPM/APT + EVA/MVA": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.551Z"
+                }
+              }
+            },
+            "Mergers": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "M&A + Takeovers + LBO": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            },
+            "Startup Finance": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Unicorns + Funding": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            }
+          }
+        },
+        "paper3": {
+          "completedTopics": 3,
+          "totalTopics": 10,
+          "topics": {
+            "Quality Control": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "SQC 1 + SA 220": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            },
+            "General Principles": {
+              "status": "inprogress",
+              "totalHours": 1,
+              "subtopics": {
+                "SA 240 (Fraud) + SA 250": {
+                  "actualHours": 1,
+                  "completed": true,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z",
+                  "autoUpdated": true
+                },
+                "SA 260 + SA 299 (Joint Audit)": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            },
+            "Audit Planning": {
+              "status": "completed",
+              "totalHours": 3,
+              "subtopics": {
+                "SA 300/450/520/540": {
+                  "actualHours": 3,
+                  "completed": true,
+                  "lastUpdated": "2026-02-01T03:55:32.713Z",
+                  "autoUpdated": true
+                }
+              }
+            },
+            "Materiality & Risk": {
+              "status": "completed",
+              "totalHours": 4,
+              "subtopics": {
+                "SA 265/315/320/330": {
+                  "actualHours": 4,
+                  "completed": true,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z",
+                  "autoUpdated": true
+                }
+              }
+            },
+            "Audit Evidence": {
+              "status": "completed",
+              "totalHours": 2,
+              "subtopics": {
+                "SA 500/501/505/530": {
+                  "actualHours": 2,
+                  "completed": true,
+                  "lastUpdated": "2026-02-04T10:24:11.060Z",
+                  "autoUpdated": true
+                }
+              }
+            },
+            "Completion": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "SA 560/570/580": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            },
+            "Reporting": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "SA 700/701/705/706": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            },
+            "Special Audits": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Banks + NBFC + PSU": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            },
+            "Digital Auditing": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "CAATs + AI + Data Analytics": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            },
+            "Professional Ethics": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "CA Act + IESBA Code": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            }
+          }
+        },
+        "paper4": {
+          "completedTopics": 0,
+          "totalTopics": 3,
+          "topics": {
+            "Company Taxation": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Computation - General Provisions": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                },
+                "Special Regimes (115BAA/BAB)": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                },
+                "Charitable Trusts (Sec 11-13)": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                },
+                "GAAR + Business Trusts": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            },
+            "Tax Administration": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "TDS/TCS (Sec 192-206C)": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                },
+                "Assessment Procedures": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                },
+                "Appeals + Revision": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            },
+            "International Taxation": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Transfer Pricing (Sec 92)": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                },
+                "Non-Resident Taxation": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                },
+                "DTAA + BEPS": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            }
+          }
+        },
+        "paper5": {
+          "completedTopics": 0,
+          "totalTopics": 5,
+          "topics": {
+            "GST - Core Concepts": {
+              "status": "inprogress",
+              "totalHours": 7,
+              "subtopics": {
+                "Levy/Collection CGST/IGST": {
+                  "actualHours": 6,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T09:24:16.224Z",
+                  "autoUpdated": true
+                },
+                "Supply (Sec 7 + Sch I/II/III)": {
+                  "actualHours": 1,
+                  "completed": true,
+                  "lastUpdated": "2026-02-09T18:40:31.563Z",
+                  "autoUpdated": true
+                },
+                "Charge of Tax + RCM": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                },
+                "ITC (Sec 16-18)": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            },
+            "GST - Procedures": {
+              "status": "inprogress",
+              "totalHours": 2,
+              "subtopics": {
+                "Registration (Sec 22-29)": {
+                  "actualHours": 2,
+                  "completed": true,
+                  "lastUpdated": "2026-02-07T16:42:47.367Z",
+                  "autoUpdated": true
+                },
+                "Returns (GSTR 1/3B/9)": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            },
+            "GST - Compliance": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Demands/Recovery (Sec 73-76)": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                },
+                "Appeals/Advance Ruling": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            },
+            "Customs": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Levy + Classification": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                },
+                "Import/Export Procedures": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            },
+            "FTP": {
+              "status": "not-started",
+              "totalHours": 0,
+              "subtopics": {
+                "Export Promotion Schemes": {
+                  "actualHours": 0,
+                  "completed": false,
+                  "lastUpdated": "2026-01-26T18:23:56.552Z"
+                }
+              }
+            }
+          }
+        },
+        "paper6": {
+          "completedTopics": 1,
+          "totalTopics": 1,
+          "topics": {
+            "Multi-disciplinary Cases": {
+              "status": "completed",
+              "totalHours": 7,
+              "subtopics": {
+                "FR + AFM + Audit + DT + IDT": {
+                  "actualHours": 7,
+                  "completed": true,
+                  "lastUpdated": "2026-02-10T09:21:45.182Z",
+                  "autoUpdated": true
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "studyPlan": [
+    {
+      "daysToExam": 150,
+      "dailyHours": 4,
+      "totalHours": 600,
+      "startDate": "2026-01-10",
+      "examDate": "2026-06-09",
+      "subjectHours": {
+        "paper1": 156,
+        "paper2": 132,
+        "paper3": 120,
+        "paper4": 96,
+        "paper5": 72,
+        "paper6": 24
+      },
+      "customDistribution": true
+    }
+  ],
+  "stats": [
+    {
+      "totalStudyDays": 10,
+      "currentStreak": 1,
+      "bestStreak": 1,
+      "totalHoursStudied": 31,
+      "successRate": 88,
+      "lastStudyDate": "2026-01-20",
+      "totalTargetsSet": 17,
+      "totalTargetsAchieved": 15,
+      "totalSuccessfulTargets": 15,
+      "dailyVelocity": 0,
+      "last7DaysVelocity": 0,
+      "lastSave": "2026-01-20T19:44:21.311Z",
+      "settings": {
+        "enableNotifications": true,
+        "enableDailySummary": true,
+        "defaultDailyHours": 4,
+        "desktopMode": true
+      }
+    }
+  ],
+  "motivation": [
+    {
+      "heatmapData": {
+        "2026": {
+          "2026-02-10": 6,
+          "2026-02-01": 2,
+          "2026-02-02": 3,
+          "2026-02-03": 2,
+          "2026-02-04": 4,
+          "2026-02-05": 2,
+          "2026-02-06": 1,
+          "2026-02-07": 2,
+          "2026-02-08": 3,
+          "2026-02-09": 1,
+          "2026-02-11": 0,
+          "2026-02-12": 0,
+          "2026-02-13": 0,
+          "2026-02-14": 0,
+          "2026-02-15": 0,
+          "2026-02-16": 0,
+          "2026-02-17": 0,
+          "2026-02-18": 0,
+          "2026-02-19": 0,
+          "2026-02-20": 0,
+          "2026-02-21": 0,
+          "2026-02-22": 0,
+          "2026-02-23": 0,
+          "2026-02-24": 0,
+          "2026-02-25": 0,
+          "2026-02-26": 0,
+          "2026-02-27": 0,
+          "2026-02-28": 0
+        }
+      },
+      "weeklyQuotes": {},
+      "favoriteQuotes": [],
+      "currentWeekQuote": null,
+      "quoteProgress": {}
+    }
+  ],
+  "targets": [
+    {
+      "id": 1770715449426,
+      "subject": "paper5",
+      "topic": "GST - Core Concepts",
+      "subtopic": "Levy/Collection CGST/IGST",
+      "date": "2026-02-09",
+      "plannedHours": 1,
+      "actualHours": 1,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-10T09:24:09.426Z",
+      "autoUpdateSubtopic": true,
+      "remark": "PYQ"
+    }
+  ],
+  "completedTargets": [
+    {
+      "id": 1767894905218,
+      "subject": "paper3",
+      "topic": "Audit Planning",
+      "subtopic": "SA 300/450/520/540",
+      "date": "2026-01-08",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-08T17:55:05.218Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1767923377439,
+      "subject": "paper3",
+      "topic": "Materiality & Risk",
+      "subtopic": "SA 265/315/320/330",
+      "date": "2026-01-09",
+      "plannedHours": 4,
+      "actualHours": 4,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-09T01:49:37.439Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768043865790,
+      "subject": "paper1",
+      "topic": "Assets",
+      "subtopic": "Ind AS 36: Impairment",
+      "date": "2026-01-10",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-10T11:17:45.790Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768067785163,
+      "subject": "paper1",
+      "topic": "Assets",
+      "subtopic": "",
+      "date": "2026-01-10",
+      "plannedHours": 2,
+      "actualHours": 1,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-10T17:56:25.163Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768112937421,
+      "subject": "paper1",
+      "topic": "Assets",
+      "subtopic": "Ind AS 23: Borrowing Costs",
+      "date": "2026-01-11",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-11T06:28:57.421Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768230313332,
+      "subject": "paper1",
+      "topic": "Introduction to GPFS",
+      "subtopic": "Applicability criteria",
+      "date": "2026-01-12",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-12T15:05:13.332Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768272990389,
+      "subject": "paper1",
+      "topic": "Presentation of Items",
+      "subtopic": "Ind AS 34: Interim",
+      "date": "2026-01-13",
+      "plannedHours": 1,
+      "actualHours": 1,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-13T02:56:30.389Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768361779490,
+      "subject": "paper3",
+      "topic": "Due Deligence ",
+      "subtopic": "",
+      "date": "2026-01-14",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-14T03:36:19.490Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768368976379,
+      "subject": "paper1",
+      "topic": "Disclosures",
+      "subtopic": "Ind AS 108: Segments",
+      "date": "2026-01-14",
+      "plannedHours": 1,
+      "actualHours": 1,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-14T05:36:16.379Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768370710456,
+      "subject": "paper1",
+      "topic": "Financial Instruments",
+      "subtopic": "Ind AS 32/107/109 Classification",
+      "date": "2026-01-14",
+      "plannedHours": 5,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-14T06:05:10.456Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768507976443,
+      "subject": "paper1",
+      "topic": "Assets",
+      "subtopic": "Ind AS 2: Inventories",
+      "date": "2026-01-15",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-15T20:12:56.443Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768554034938,
+      "subject": "paper1",
+      "topic": "Financial Instruments",
+      "subtopic": "Ind AS 32/107/109 Classification",
+      "date": "2026-01-16",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-16T09:00:34.938Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768636287939,
+      "subject": "paper1",
+      "topic": "Group Accounting",
+      "subtopic": "Ind AS 103: Business Combos",
+      "date": "2026-01-17",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-17T07:51:27.939Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768719744574,
+      "subject": "paper1",
+      "topic": "Group Accounting",
+      "subtopic": "Ind AS 103: Business Combos",
+      "date": "2026-01-18",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-18T07:02:24.574Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768726140360,
+      "subject": "paper1",
+      "topic": "Group Accounting",
+      "subtopic": "Ind AS 103: Business Combos",
+      "date": "2026-01-18",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-18T08:49:00.360Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768875309818,
+      "subject": "paper1",
+      "topic": "Financial Instruments",
+      "subtopic": "Ind AS 32/107/109 Classification",
+      "date": "2026-01-20",
+      "plannedHours": 3,
+      "actualHours": 3,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-20T02:15:09.818Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768875387584,
+      "subject": "paper3",
+      "topic": "General Principles",
+      "subtopic": "SA 240 (Fraud) + SA 250",
+      "date": "2026-01-19",
+      "plannedHours": 1,
+      "actualHours": 1,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-20T02:16:27.584Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768996167622,
+      "subject": "paper1",
+      "topic": "Assets",
+      "subtopic": "Ind AS 36: Impairment",
+      "date": "2026-01-21",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-21T11:49:27.622Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1768996214833,
+      "subject": "general",
+      "topic": "Game UI",
+      "subtopic": "",
+      "date": "2026-01-20",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-21T11:50:14.833Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1769058254669,
+      "subject": "paper1",
+      "topic": "First-time Adoption",
+      "subtopic": "Ind AS 101",
+      "date": "2026-01-22",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-22T05:04:14.669Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1769106804703,
+      "subject": "paper1",
+      "topic": "Measurement Policies",
+      "subtopic": "Ind AS 8: Policies/Errors",
+      "date": "2026-01-22",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-22T18:33:24.703Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1769191967302,
+      "subject": "paper1",
+      "topic": "Assets",
+      "subtopic": "Ind AS 38: Intangibles",
+      "date": "2026-01-23",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-23T18:12:47.302Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1769240671586,
+      "subject": "paper1",
+      "topic": "Group Accounting",
+      "subtopic": "Ind AS 110/111/28: Consolidation",
+      "date": "2026-01-24",
+      "plannedHours": 3,
+      "actualHours": 3,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-24T07:44:31.586Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1769343472180,
+      "subject": "paper1",
+      "topic": "Assets",
+      "subtopic": "Ind AS 38: Intangibles",
+      "date": "2026-01-25",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-25T12:17:52.180Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1769450915620,
+      "subject": "paper5",
+      "topic": "GST - Core Concepts",
+      "subtopic": "Levy/Collection CGST/IGST",
+      "date": "2026-01-26",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-26T18:08:35.620Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1769540229533,
+      "subject": "paper5",
+      "topic": "GST - Core Concepts",
+      "subtopic": "Supply (Sec 7 + Sch I/II/III)",
+      "date": "2026-01-27",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-27T18:57:09.533Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1769625195135,
+      "subject": "paper1",
+      "topic": "Conceptual Framework",
+      "subtopic": "Application to GPFS",
+      "date": "2026-01-28",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-28T18:33:15.135Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1769690199203,
+      "subject": "paper3",
+      "topic": "Audit Planning",
+      "subtopic": "SA 300/450/520/540",
+      "date": "2026-01-29",
+      "plannedHours": 4,
+      "actualHours": 3,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-01-29T12:36:39.203Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1769918167962,
+      "subject": "paper6",
+      "topic": "Multi-disciplinary Cases",
+      "subtopic": "FR + AFM + Audit + DT + IDT",
+      "date": "2026-01-30",
+      "plannedHours": 2,
+      "actualHours": 1,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-01T03:56:07.963Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1769918204149,
+      "subject": "general",
+      "topic": "IIT Delhi",
+      "subtopic": "",
+      "date": "2026-01-30",
+      "plannedHours": 1,
+      "actualHours": 1,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-01T03:56:44.149Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1770055651060,
+      "subject": "paper1",
+      "topic": "Assets",
+      "subtopic": "Ind AS 23: Borrowing Costs",
+      "date": "2026-02-02",
+      "plannedHours": 2,
+      "actualHours": 0,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-02T18:07:31.060Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1770055695893,
+      "subject": "paper1",
+      "topic": "Assets",
+      "subtopic": "Ind AS 23: Borrowing Costs",
+      "date": "2026-02-01",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-02T18:08:15.893Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1770055734930,
+      "subject": "paper1",
+      "topic": "Income Statement",
+      "subtopic": "Ind AS 115: Revenue",
+      "date": "2026-02-02",
+      "plannedHours": 2,
+      "actualHours": 3,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-02T18:08:54.930Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1770200616768,
+      "subject": "paper1",
+      "topic": "Assets",
+      "subtopic": "Ind AS 116: Leases",
+      "date": "2026-02-04",
+      "plannedHours": 4,
+      "actualHours": 4,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-04T10:23:36.768Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1770200643239,
+      "subject": "paper3",
+      "topic": "Audit Evidence",
+      "subtopic": "SA 500/501/505/530",
+      "date": "2026-02-03",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-04T10:24:03.239Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1770280516716,
+      "subject": "paper1",
+      "topic": "Assets",
+      "subtopic": "Ind AS 2: Inventories",
+      "date": "2026-02-05",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-05T08:35:16.718Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1770356497044,
+      "subject": "paper1",
+      "topic": "Group Accounting",
+      "subtopic": "Ind AS 110/111/28: Consolidation",
+      "date": "2026-02-06",
+      "plannedHours": 2,
+      "actualHours": 1,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-06T05:41:37.044Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1770482501984,
+      "subject": "paper6",
+      "topic": "Multi-disciplinary Cases",
+      "subtopic": "FR + AFM + Audit + DT + IDT",
+      "date": "2026-01-31",
+      "plannedHours": 1,
+      "actualHours": 1,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-07T16:41:41.984Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1770482560121,
+      "subject": "paper5",
+      "topic": "GST - Procedures",
+      "subtopic": "Registration (Sec 22-29)",
+      "date": "2026-02-07",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-07T16:42:40.121Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1770509195860,
+      "subject": "paper1",
+      "topic": "Assets",
+      "subtopic": "Ind AS 36: Impairment",
+      "date": "2026-02-08",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-08T00:06:35.860Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1770662423982,
+      "subject": "paper5",
+      "topic": "GST - Core Concepts",
+      "subtopic": "Supply (Sec 7 + Sch I/II/III)",
+      "date": "2026-02-08",
+      "plannedHours": 4,
+      "actualHours": 1,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-09T18:40:23.982Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1770705538973,
+      "subject": "paper1",
+      "topic": "Liabilities",
+      "subtopic": "Ind AS 19: Employee Benefits",
+      "date": "2026-02-10",
+      "plannedHours": 1,
+      "actualHours": 1,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-10T06:38:58.973Z",
+      "autoUpdateSubtopic": true
+    },
+    {
+      "id": 1770713358629,
+      "subject": "paper1",
+      "topic": "Liabilities",
+      "subtopic": "Ind AS 19: Employee Benefits",
+      "date": "2026-02-10",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-10T08:49:18.629Z",
+      "autoUpdateSubtopic": true,
+      "remark": "Concepts",
+      "completedDate": "2026-02-10T09:19:38.954Z"
+    },
+    {
+      "id": 1770715295217,
+      "subject": "paper6",
+      "topic": "Multi-disciplinary Cases",
+      "subtopic": "FR + AFM + Audit + DT + IDT",
+      "date": "2026-02-10",
+      "plannedHours": 2,
+      "actualHours": 2,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-10T09:21:35.217Z",
+      "autoUpdateSubtopic": true,
+      "remark": "Concepts",
+      "completedDate": "2026-02-10T09:21:45.182Z"
+    },
+    {
+      "id": 1770715385312,
+      "subject": "paper1",
+      "topic": "Assets",
+      "subtopic": "Ind AS 16: PPE",
+      "date": "2026-02-10",
+      "plannedHours": 1,
+      "actualHours": 1,
+      "completed": true,
+      "status": "completed",
+      "created": "2026-02-10T09:23:05.312Z",
+      "autoUpdateSubtopic": true,
+      "remark": "MTP",
+      "completedDate": "2026-02-10T09:23:14.503Z"
+    }
+  ],
+  "videos": [
+    {
+      "id": 1767928457257,
+      "title": "AUDIT Revision Hinglish",
+      "subject": "paper3",
+      "link": "https://youtube.com/playlist?list=PLjURe7lJQG-r68qgQOnePcbpQQEApPHye&si=LE3yBTljGOefR4Ve",
+      "author": "Satyam Kumar",
+      "addedDate": "2026-01-09T03:14:17.257Z"
+    },
+    {
+      "id": 1768043631781,
+      "title": "FR",
+      "subject": "paper1",
+      "link": "https://youtube.com/playlist?list=PL_oXvVx-zrNErj6o93m8f5WYLkQ4iF_Ud&si=h5PMcwZmv79UudcV",
+      "author": "Satyam Kumar",
+      "addedDate": "2026-01-10T11:13:51.781Z"
+    },
+    {
+      "id": 1768043782948,
+      "title": "AFM by Aa",
+      "subject": "paper2",
+      "link": "https://youtube.com/playlist?list=PL_oXvVx-zrNGsAjsFwlBZwwR0dJQ9Sy3c&si=6u-T2MInOh0E8NSx",
+      "author": "Satyam Kumar",
+      "addedDate": "2026-01-10T11:16:22.950Z"
+    },
+    {
+      "id": 1768113326963,
+      "title": "AFM Pw",
+      "subject": "paper2",
+      "link": "https://youtube.com/playlist?list=PLgE50OYPyT6p7MBnsTDoRFTdZloEdIWG5&si=beuiO-JimNiJWhbp",
+      "author": "Satyam Kumar",
+      "addedDate": "2026-01-11T06:35:26.963Z"
+    },
+    {
+      "id": 1768114090678,
+      "title": "Fr by pw",
+      "subject": "paper1",
+      "link": "https://youtube.com/playlist?list=PLgE50OYPyT6pZTMhQ4de-Rh-mOrT2O3l_&si=WIy3Sj1lNZ65OnOa",
+      "author": "Satyam Kumar",
+      "addedDate": "2026-01-11T06:48:10.680Z"
+    },
+    {
+      "id": 1768114190823,
+      "title": "PW",
+      "subject": "paper3",
+      "link": "https://youtube.com/playlist?list=PLgE50OYPyT6oEbPdDT_g6IDy1jIh4guZd&si=t0XayH1kzUfptUjF",
+      "author": "Satyam Kumar",
+      "addedDate": "2026-01-11T06:49:50.823Z"
+    },
+    {
+      "id": 1768115075387,
+      "title": "Pw",
+      "subject": "paper5",
+      "link": "https://youtube.com/playlist?list=PLgE50OYPyT6rWIrvFroYVEEy6boT72dOh&si=xptUYcK0wftJVl2F",
+      "author": "Satyam Kumar",
+      "addedDate": "2026-01-11T07:04:35.387Z"
+    },
+    {
+      "id": 1768115131186,
+      "title": "Pw",
+      "subject": "paper4",
+      "link": "https://youtube.com/playlist?list=PLgE50OYPyT6qubvdQHMNcuat3ID48C4nP&si=oG2GXPvtkN7MeOxf",
+      "author": "Satyam Kumar",
+      "addedDate": "2026-01-11T07:05:31.186Z"
+    },
+    {
+      "id": 1768340953989,
+      "title": "Riddhi idt",
+      "subject": "paper5",
+      "link": "https://youtube.com/playlist?list=PLiWbhDVH0Z3JE_fLiQ_v4tTHd2dLQtSXG&si=awMYom7USqWuAWeO",
+      "author": "Satyam Kumar",
+      "addedDate": "2026-01-13T21:49:13.989Z"
+    },
+    {
+      "id": 1768370654949,
+      "title": "Case study",
+      "subject": "paper6",
+      "link": "https://youtube.com/playlist?list=PLgE50OYPyT6r2-RQM7SAgAX29vhqv4QRs&si=muEtZKgdh_kPLXHr",
+      "author": "Satyam Kumar",
+      "addedDate": "2026-01-14T06:04:14.949Z"
+    },
+    {
+      "id": 1768636324413,
+      "title": "AK",
+      "subject": "paper1",
+      "link": "https://youtube.com/playlist?list=PLm8RLlq6Pj_ln2yKpfkl8g-54qxsaWLB9&si=t2IT-cXp7A4zz4aq",
+      "author": "Satyam Kumar",
+      "addedDate": "2026-01-17T07:52:04.413Z"
+    },
+    {
+      "id": 1770560158806,
+      "title": "AUDIT 23 HOUR MARATHON",
+      "subject": "paper3",
+      "link": "https://youtu.be/3tn37O-xYk8?si=ID_ubDVxhC32yM3u",
+      "author": "Satyam Kumar",
+      "addedDate": "2026-02-08T14:15:58.806Z"
+    }
+  ],
+  "resources": [
+    {
+      "id": 1768043822554,
+      "title": "Notes",
+      "subject": "general",
+      "type": "notes",
+      "link": "https://drive.google.com/drive/folders/1LC3pgisXJxGF8dax63M-9MX_GfFOohca",
+      "author": "Satyam Kumar",
+      "addedDate": "2026-01-10T11:17:02.554Z"
+    }
+  ],
+  "exportDate": "2026-02-10T09:24:43.225Z",
+  "version": "2.0",
+  "app": "CA Final Pro Tracker"
+}
