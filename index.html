@@ -4803,45 +4803,47 @@ document.querySelectorAll('.btn-small[data-subject]').forEach(btn => {
     });
 });
 
-// Hide/Show controls
-document.querySelectorAll('.view-control-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const section = this.getAttribute('data-section');
-        const isActive = this.classList.contains('active');
-        
-        if (isActive) {
-            this.classList.remove('active');
-            hideSection(section);
-        } else {
-            this.classList.add('active');
-            showSection(section);
-        }
-    });
-});
-
-function hideSection(section) {
-    if (section === 'suggestion') {
-        document.getElementById('suggestion-card').classList.add('collapsed');
-    } else if (section === 'form') {
-        document.getElementById('planning-form').classList.add('collapsed');
-    } else if (section === 'live-targets') {
-        document.querySelector('.target-list-container').classList.add('collapsed');
-    } else if (section === 'history') {
-        document.querySelectorAll('.target-list-container')[1]?.classList.add('collapsed');
-    }
-}
-
-function showSection(section) {
-    if (section === 'suggestion') {
-        document.getElementById('suggestion-card').classList.remove('collapsed');
-    } else if (section === 'form') {
-        document.getElementById('planning-form').classList.remove('collapsed');
-    } else if (section === 'live-targets') {
-        document.querySelector('.target-list-container').classList.remove('collapsed');
-    } else if (section === 'history') {
-        document.querySelectorAll('.target-list-container')[1]?.classList.remove('collapsed');
-    }
-}
+            // Hide/Show controls (MUST ADD THIS)
+            setTimeout(() => {
+                document.querySelectorAll('.view-control-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const section = this.getAttribute('data-section');
+                        const isActive = this.classList.contains('active');
+                        
+                        if (isActive) {
+                            this.classList.remove('active');
+                            hideSection(section);
+                        } else {
+                            this.classList.add('active');
+                            showSection(section);
+                        }
+                    });
+                });
+                
+                function hideSection(section) {
+                    if (section === 'suggestion') {
+                        document.getElementById('suggestion-card').classList.add('collapsed');
+                    } else if (section === 'form') {
+                        document.getElementById('planning-form').classList.add('collapsed');
+                    } else if (section === 'live-targets') {
+                        document.querySelector('.target-list-container').classList.add('collapsed');
+                    } else if (section === 'history') {
+                        document.querySelectorAll('.target-list-container')[1]?.classList.add('collapsed');
+                    }
+                }
+                
+                function showSection(section) {
+                    if (section === 'suggestion') {
+                        document.getElementById('suggestion-card').classList.remove('collapsed');
+                    } else if (section === 'form') {
+                        document.getElementById('planning-form').classList.remove('collapsed');
+                    } else if (section === 'live-targets') {
+                        document.querySelector('.target-list-container').classList.remove('collapsed');
+                    } else if (section === 'history') {
+                        document.querySelectorAll('.target-list-container')[1]?.classList.remove('collapsed');
+                    }
+                }
+            }, 1500);
 
 // Initialize suggestion on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -4851,6 +4853,59 @@ document.addEventListener('DOMContentLoaded', function() {
         displaySuggestion(suggestion);
     }, 1000);
 });
+                      // Suggestion system event listeners
+            document.getElementById('suggestion-toggle')?.addEventListener('click', function() {
+                const content = document.getElementById('suggestion-content');
+                const icon = this.querySelector('i');
+                content.classList.toggle('expanded');
+                icon.classList.toggle('fa-chevron-down');
+                icon.classList.toggle('fa-chevron-up');
+            });
+            
+            document.getElementById('accept-suggestion-btn')?.addEventListener('click', acceptSuggestion);
+            
+            document.getElementById('shuffle-suggestion-btn')?.addEventListener('click', function() {
+                const suggestion = generateSmartSuggestion();
+                displaySuggestion(suggestion);
+                showToast('New suggestion generated!', 'success');
+            });
+            
+            document.getElementById('generate-suggestion-btn')?.addEventListener('click', function() {
+                const suggestion = generateSmartSuggestion();
+                displaySuggestion(suggestion);
+                showToast('New suggestion generated!', 'success');
+            });
+            
+            document.getElementById('customize-suggestion-btn')?.addEventListener('click', function() {
+                document.getElementById('customize-modal').classList.add('active');
+            });
+            
+            document.getElementById('customize-close')?.addEventListener('click', function() {
+                document.getElementById('customize-modal').classList.remove('active');
+            });
+            
+            document.getElementById('apply-customization-btn')?.addEventListener('click', function() {
+                suggestionWeights = {
+                    weightage: parseInt(document.getElementById('weight-weightage').value),
+                    progress: parseInt(document.getElementById('weight-progress').value),
+                    consistency: parseInt(document.getElementById('weight-consistency').value),
+                    recent: parseInt(document.getElementById('weight-recent').value),
+                    remark: parseInt(document.getElementById('weight-remark').value)
+                };
+                
+                document.getElementById('customize-modal').classList.remove('active');
+                
+                const focus = document.getElementById('focus-preference').value;
+                const customTime = parseFloat(document.getElementById('custom-time').value) || 2;
+                
+                // Regenerate with custom settings
+                const suggestion = generateSmartSuggestion();
+                suggestion.suggestedHours = customTime;
+                displaySuggestion(suggestion);
+                
+                showToast('Custom preferences applied!', 'success');
+            });
+
             // Videos
             document.getElementById('video-toggle').addEventListener('click', () => {
                 document.getElementById('video-toggle').classList.toggle('expanded');
@@ -5027,7 +5082,17 @@ if (userResources.length === 0) {
     DataStorage.save('resources', userResources);
 }
 }
-
+            // Update slider value displays (MUST ADD THIS)
+            setTimeout(() => {
+                document.querySelectorAll('input[type="range"]').forEach(slider => {
+                    slider.addEventListener('input', function() {
+                        const valueDisplay = document.getElementById(`${this.id}-value`);
+                        if (valueDisplay) {
+                            valueDisplay.textContent = `${this.value}%`;
+                        }
+                    });
+                });
+            }, 2000);
         
         function updateUserUI() {
             if (currentUser) {
