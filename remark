@@ -2799,24 +2799,41 @@
                         </div>
                     </div>
                     
-                    <div class="target-setup-card">
-                        <div class="target-setup-header">
-                            <h3><i class="fas fa-chart-bar"></i> Success Rate</h3>
-                        </div>
-                        <div class="target-setup-content expanded">
-                            <div style="display: flex; align-items: center; gap: 20px;">
-                                <div style="flex: 1;">
-                                    <div class="progress-bar" style="height: 20px; background: #e9ecef; border-radius: 10px; overflow: hidden;">
-                                        <div id="success-rate-bar" style="height: 100%; background: var(--success); width: 0%; transition: width 0.5s ease;"></div>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; margin-top: 8px;">
-                                        <span>Success Rate</span>
-                                        <span id="success-rate-text" style="font-weight: 600;">0%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Remark Summary Card -->
+<div class="target-setup-card" style="margin-bottom: 20px;">
+    <div class="target-setup-header">
+        <h3><i class="fas fa-tags"></i> Analysis by Remark</h3>
+    </div>
+    <div class="target-setup-content expanded">
+        <div id="remark-summary-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
+            <!-- Stats will be loaded here -->
+        </div>
+        <div id="remark-distribution-chart" style="height: 200px; position: relative;">
+            <canvas id="remark-chart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Success Rate Card (existing) -->
+<div class="target-setup-card">
+    <div class="target-setup-header">
+        <h3><i class="fas fa-chart-bar"></i> Success Rate</h3>
+    </div>
+    <div class="target-setup-content expanded">
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="flex: 1;">
+                <div class="progress-bar" style="height: 20px; background: #e9ecef; border-radius: 10px; overflow: hidden;">
+                    <div id="success-rate-bar" style="height: 100%; background: var(--success); width: 0%; transition: width 0.5s ease;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                    <span>Success Rate</span>
+                    <span id="success-rate-text" style="font-weight: 600;">0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
                     
                     <div class="planning-container">
                         <!-- Add Target Form -->
@@ -2857,10 +2874,23 @@
                                 <label for="target-date">Target Date</label>
                                 <input type="date" id="target-date" class="subject-dropdown">
                             </div>
-                                                        <div class="form-group">
-                                <label for="planned-hours-input">Planned Hours</label>
-                                <input type="number" id="planned-hours-input" class="subject-dropdown" min="0.5" max="12" step="0.5" value="2">
-                            </div>
+                                                       <div class="form-group">
+    <label for="planned-hours-input">Planned Hours</label>
+    <input type="number" id="planned-hours-input" class="subject-dropdown" min="0.5" max="12" step="0.5" value="2">
+</div>
+<div class="form-group">
+    <label for="remark-select">Remark</label>
+    <select id="remark-select" class="subject-dropdown">
+        <option value="">Select Remark</option>
+        <option value="Revision">Revision</option>
+        <option value="Concepts">Concepts</option>
+        <option value="MTP">MTP</option>
+        <option value="RTP">RTP</option>
+        <option value="PYQ">PYQ</option>
+        <option value="custom">Custom Remark...</option>
+    </select>
+    <input type="text" id="custom-remark-input" class="subject-dropdown" placeholder="Enter custom remark" style="margin-top: 10px; display: none;">
+</div>
                             
                              <div class="form-group">
                                 <label for="auto-update-checkbox">
@@ -3437,7 +3467,7 @@
                     },
                     {
                         name: "Assets",
-                        weightage: 20,
+                        weightage: 25,
                         priority: "A",
                         subtopics: [
                             { name: "Ind AS 2: Inventories", weight: 16.7 },
@@ -3450,7 +3480,7 @@
                     },
                     {
                         name: "Liabilities",
-                        weightage: 20,
+                        weightage: 10,
                         priority: "A",
                         subtopics: [
                             { name: "Ind AS 19: Employee Benefits", weight: 50 },
@@ -3459,7 +3489,7 @@
                     },
                     {
                         name: "Items Impacting FS",
-                        weightage: 17.5,
+                        weightage: 7.5,
                         priority: "A",
                         subtopics: [
                             { name: "Ind AS 12: Income Taxes", weight: 80 },
@@ -3468,7 +3498,7 @@
                     },
                     {
                         name: "Disclosures",
-                        weightage: 17.5,
+                        weightage: 10.5,
                         priority: "B",
                         subtopics: [
                             { name: "Ind AS 24: Related Parties", weight: 33.3 },
@@ -3487,7 +3517,7 @@
                     },
                     {
                         name: "Group Accounting",
-                        weightage: 15,
+                        weightage: 20,
                         priority: "A",
                         subtopics: [
                             { name: "Ind AS 103: Business Combos", weight: 55.6 },
@@ -3496,7 +3526,7 @@
                     },
                     {
                         name: "First-time Adoption",
-                        weightage: 7.5,
+                        weightage: 5,
                         priority: "B",
                         subtopics: [
                             { name: "Ind AS 101", weight: 100 }
@@ -3553,7 +3583,7 @@
                     },
                     {
                         name: "Security Analysis",
-                        weightage: 25,
+                        weightage: 15,
                         priority: "A",
                         subtopics: [
                             { name: "Fundamental Analysis", weight: 50 },
@@ -3562,7 +3592,7 @@
                     },
                     {
                         name: "Security Valuation",
-                        weightage: 25,
+                        weightage: 15,
                         priority: "A",
                         subtopics: [
                             { name: "Equity/Pref/Debentures", weight: 50 },
@@ -3571,7 +3601,7 @@
                     },
                     {
                         name: "Portfolio Management",
-                        weightage: 25,
+                        weightage: 15,
                         priority: "A",
                         subtopics: [
                             { name: "Analysis/Selection/Revision", weight: 66.7 },
@@ -3580,7 +3610,7 @@
                     },
                     {
                         name: "Derivatives",
-                        weightage: 22.5,
+                        weightage: 20,
                         priority: "A",
                         subtopics: [
                             { name: "Forwards/Futures/Options", weight: 50 },
@@ -3589,7 +3619,7 @@
                     },
                     {
                         name: "Forex Risk",
-                        weightage: 22.5,
+                        weightage: 20,
                         priority: "A",
                         subtopics: [
                             { name: "FX factors + SWIFT", weight: 100 }
@@ -3606,7 +3636,7 @@
                     },
                     {
                         name: "Mergers",
-                        weightage: 3.5,
+                        weightage: 5,
                         priority: "A",
                         subtopics: [
                             { name: "M&A + Takeovers + LBO", weight: 100 }
@@ -3628,7 +3658,7 @@
                 topics: [
                     {
                         name: "Quality Control",
-                        weightage: 50,
+                        weightage: 10,
                         priority: "A",
                         subtopics: [
                             { name: "SQC 1 + SA 220", weight: 100 }
@@ -3636,7 +3666,7 @@
                     },
                     {
                         name: "General Principles",
-                        weightage: 50,
+                        weightage: 10,
                         priority: "A",
                         subtopics: [
                             { name: "SA 240 (Fraud) + SA 250", weight: 50 },
@@ -3645,7 +3675,7 @@
                     },
                     {
                         name: "Audit Planning",
-                        weightage: 50,
+                        weightage: 10,
                         priority: "A",
                         subtopics: [
                             { name: "SA 300/450/520/540", weight: 100 }
@@ -3653,7 +3683,7 @@
                     },
                     {
                         name: "Materiality & Risk",
-                        weightage: 4.5,
+                        weightage: 7,
                         priority: "A",
                         subtopics: [
                             { name: "SA 265/315/320/330", weight: 100 }
@@ -3661,7 +3691,7 @@
                     },
                     {
                         name: "Audit Evidence",
-                        weightage: 4.5,
+                        weightage: 7,
                         priority: "A",
                         subtopics: [
                             { name: "SA 500/501/505/530", weight: 100 }
@@ -3669,7 +3699,7 @@
                     },
                     {
                         name: "Completion",
-                        weightage: 20.5,
+                        weightage: 12,
                         priority: "A",
                         subtopics: [
                             { name: "SA 560/570/580", weight: 100 }
@@ -3677,7 +3707,7 @@
                     },
                     {
                         name: "Reporting",
-                        weightage: 20.5,
+                        weightage: 12,
                         priority: "A",
                         subtopics: [
                             { name: "SA 700/701/705/706", weight: 100 }
@@ -3685,7 +3715,7 @@
                     },
                     {
                         name: "Special Audits",
-                        weightage: 20.5,
+                        weightage: 12,
                         priority: "A",
                         subtopics: [
                             { name: "Banks + NBFC + PSU", weight: 100 }
@@ -3701,7 +3731,7 @@
                     },
                     {
                         name: "Professional Ethics",
-                        weightage: 20.5,
+                        weightage: 22,
                         priority: "A",
                         subtopics: [
                             { name: "CA Act + IESBA Code", weight: 100 }
@@ -3715,7 +3745,7 @@
                 topics: [
                     {
                         name: "Company Taxation",
-                        weightage: 42.5,
+                        weightage: 32.5,
                         priority: "A",
                         subtopics: [
                             { name: "Computation - General Provisions", weight: 40 },
@@ -3736,7 +3766,7 @@
                     },
                     {
                         name: "International Taxation",
-                        weightage: 32.5,
+                        weightage: 30,
                         priority: "A",
                         subtopics: [
                             { name: "Transfer Pricing (Sec 92)", weight: 40 },
@@ -3752,7 +3782,7 @@
                 topics: [
                     {
                         name: "GST - Core Concepts",
-                        weightage: 55,
+                        weightage: 35,
                         priority: "A",
                         subtopics: [
                             { name: "Levy/Collection CGST/IGST", weight: 27.8 },
@@ -3781,7 +3811,7 @@
                     },
                     {
                         name: "Customs",
-                        weightage: 52.5,
+                        weightage: 30,
                         priority: "B",
                         subtopics: [
                             { name: "Levy + Classification", weight: 57.1 },
@@ -4614,7 +4644,16 @@ if (userVideos.length === 0) {
     DataStorage.save('videos', userVideos);
 }
 
-            
+  // Add this code anywhere in the setupEventListeners function:
+document.getElementById('remark-select')?.addEventListener('change', function() {
+    const customRemarkInput = document.getElementById('custom-remark-input');
+    if (this.value === 'custom') {
+        customRemarkInput.style.display = 'block';
+    } else {
+        customRemarkInput.style.display = 'none';
+    }
+});
+
   // Add default resources if none exist
 if (userResources.length === 0) {
     userResources = [
@@ -5160,7 +5199,8 @@ if (userResources.length === 0) {
                 };
             }
             
-            userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = hours;
+            const currentHours = userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours || 0; 
+            userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = currentHours + hours;
             userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = hours > 0;
                   userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].lastUpdated = new Date().toISOString();
             userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].autoUpdated = false; // Manually updated
@@ -5192,7 +5232,8 @@ if (userResources.length === 0) {
                     };
                 }
                 
-                userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = hours;
+                const currentHours = userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours || 0; 
+                userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = currentHours + hours;
                 userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = hours > 0;
                 userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].lastUpdated = new Date().toISOString();
                 
@@ -5332,7 +5373,7 @@ if (userResources.length === 0) {
                         };
                     }
                     
-                    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = hours;
+                    const currentHours = userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours || 0; userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = currentHours + hours;
                     userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = hours > 0;
                     userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].lastUpdated = new Date().toISOString();
                     
@@ -6100,14 +6141,15 @@ if (userResources.length === 0) {
         }
         
         // ==================== PLANNING PAGE FUNCTIONS ====================
-        function loadPlanningPage() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('target-date').value = today;
-            
-            loadTopicsForPlanning();
-            loadTargets();
-            loadTargetHistory();
-        }
+       function loadPlanningPage() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('target-date').value = today;
+    
+    loadTopicsForPlanning();
+    loadTargets();
+    loadTargetHistory();
+    updateRemarkSummary(); // ADD THIS LINE
+}
         
         function loadTopicsForPlanning() {
             const subjectSelect = document.getElementById('planning-subject');
@@ -6171,7 +6213,12 @@ if (userResources.length === 0) {
             let subtopic = document.getElementById('planning-subtopic').value;
             const date = document.getElementById('target-date').value;
             const plannedHours = parseFloat(document.getElementById('planned-hours-input').value) || 2;
-            
+            // ADD THIS CODE AFTER THE ABOVE LINE:
+let remark = document.getElementById('remark-select').value;
+if (remark === 'custom') {
+    const customRemark = document.getElementById('custom-remark-input').value.trim();
+    remark = customRemark || 'Custom';
+}
             if (!subject || !topic) {
                 showToast('Please select subject and topic', 'error');
                 return;
@@ -6189,20 +6236,20 @@ if (userResources.length === 0) {
                     subtopic = customSubtopic;
                 }
             }
-            
-                     const target = {
-                id: Date.now(),
-                subject: subject,
-                topic: topic,
-                subtopic: subtopic || '',
-                date: date,
-                plannedHours: plannedHours,
-                actualHours: 0,
-                completed: false,
-                status: 'active',
-                created: new Date().toISOString(),
-                autoUpdateSubtopic: document.getElementById('auto-update-checkbox')?.checked || true
-            };
+            const target = {
+    id: Date.now(),
+    subject: subject,
+    topic: topic,
+    subtopic: subtopic || '',
+    date: date,
+    plannedHours: plannedHours,
+    actualHours: 0,
+    completed: false,
+    status: 'active',
+    created: new Date().toISOString(),
+    autoUpdateSubtopic: document.getElementById('auto-update-checkbox')?.checked || true,
+    remark: remark || 'General'  // ADD THIS LINE
+};
             userTargets.push(target);
             
             await DataStorage.manualSave('targets', userTargets, (success) => {
@@ -6280,12 +6327,13 @@ if (userResources.length === 0) {
                         <div class="target-title">${target.topic}${target.subtopic ? `: ${target.subtopic}` : ''}</div>
                         <span class="target-subject">${getSubjectName(target.subject)}</span>
                     </div>
-                    <div class="target-details">
-                        <div><strong>Date:</strong> ${formatDate(target.date)}</div>
-                        <div style="color: ${statusColor}; font-weight: 600;">
-                            <i class="fas ${statusIcon}"></i> ${statusText}
-                        </div>
-                    </div>
+                   <div class="target-details">
+    <div><strong>Date:</strong> ${formatDate(target.date)}</div>
+    <div><strong>Remark:</strong> ${target.remark || 'General'}</div>
+    <div style="color: ${statusColor}; font-weight: 600;">
+        <i class="fas ${statusIcon}"></i> ${statusText}
+    </div>
+</div>
                     <div class="target-time">
                         <div class="target-planned">
                             <strong>Planned:</strong> ${target.plannedHours} hrs
@@ -6583,9 +6631,10 @@ async function deleteTarget(index) {
                 };
             }
             
-            // Update the subtopic with actual hours from the target
-            userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = actualHours;
-            userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = actualHours > 0;
+           // Update the subtopic by ADDING actual hours from the target (not replacing)
+const currentHours = userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours || 0;
+userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = currentHours + hours;
+userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = (currentHours + hours) > 0;
             userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].lastUpdated = new Date().toISOString();
             userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].autoUpdated = true; // Mark as auto-updated
             
@@ -6696,7 +6745,87 @@ async function deleteTarget(index) {
             
             document.getElementById('search-history').addEventListener('input', loadTargetHistory);
         }
+        function updateRemarkSummary() {
+    const allTargets = [...userTargets, ...completedTargets];
+    const totalTargets = allTargets.length;
+    
+    if (totalTargets === 0) {
+        document.getElementById('remark-summary-stats').innerHTML = '<p style="text-align: center; color: var(--gray);">No targets to analyze</p>';
+        return;
+    }
+    
+    // Count targets by remark
+    const remarkCounts = {};
+    const remarkHours = {};
+    
+    allTargets.forEach(target => {
+        const remark = target.remark || 'General';
+        remarkCounts[remark] = (remarkCounts[remark] || 0) + 1;
+        remarkHours[remark] = (remarkHours[remark] || 0) + (target.actualHours || 0);
+    });
+    
+    // Create stats HTML
+    let statsHTML = '';
+    Object.keys(remarkCounts).forEach(remark => {
+        const count = remarkCounts[remark];
+        const percentage = Math.round((count / totalTargets) * 100);
+        const hours = remarkHours[remark];
         
+        statsHTML += `
+            <div class="target-value" style="padding: 15px;">
+                <div class="value" style="font-size: 24px;">${count}</div>
+                <div class="label">${remark}</div>
+                <div style="font-size: 12px; color: var(--gray); margin-top: 5px;">
+                    ${percentage}% • ${hours.toFixed(1)} hrs
+                </div>
+            </div>
+        `;
+    });
+    
+    document.getElementById('remark-summary-stats').innerHTML = statsHTML;
+    
+    // Create chart
+    const ctx = document.getElementById('remark-chart')?.getContext('2d');
+    if (ctx) {
+        // Destroy existing chart if any
+        if (window.remarkChart) window.remarkChart.destroy();
+        
+        const labels = Object.keys(remarkCounts);
+        const data = labels.map(label => remarkCounts[label]);
+        const colors = ['#3498db', '#2ecc71', '#e74c3c', '#f39c12', '#9b59b6', '#1abc9c'];
+        
+        window.remarkChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: colors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const percentage = Math.round((value / totalTargets) * 100);
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
         // ==================== VIDEOS & RESOURCES FUNCTIONS ====================
         function loadVideos() {
             const videosList = document.getElementById('videos-list');
