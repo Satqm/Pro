@@ -2421,7 +2421,97 @@
                 gap: 10px;
             }
         }
-          
+         /* Suggestion System */
+.suggestion-item {
+    background: rgba(255,255,255,0.1);
+    padding: 12px 15px;
+    border-radius: 10px;
+    border-left: 3px solid var(--success);
+}
+
+.suggestion-item i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+.slider {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: #e9ecef;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--secondary);
+    cursor: pointer;
+}
+
+/* Hide/Show Controls */
+.view-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.view-control-btn {
+    padding: 10px 20px;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--gray);
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.view-control-btn.active {
+    background: var(--secondary);
+    color: white;
+    border-color: var(--secondary);
+}
+
+.view-control-btn:hover {
+    transform: translateY(-2px);
+}
+
+.collapsible-section {
+    transition: all 0.3s ease;
+}
+
+.collapsible-section.collapsed {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.suggestion-history-item {
+    padding: 12px 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.suggestion-history-date {
+    font-size: 12px;
+    color: var(--gray);
+} 
         
     </style>
 </head>
@@ -2769,15 +2859,28 @@
                 
                 <!-- Planning Page -->
                 <div class="page" id="planning-page">
-                    <div class="page-header">
-                        <h2 class="page-title"><i class="fas fa-calendar-check"></i> Daily Planning</h2>
-                        <div class="page-actions">
-                            <div class="add-resource-toggle" id="planning-toggle">
-                                <i class="fas fa-plus"></i>
-                                <span>Add Target</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="page-header">
+    <h2 class="page-title"><i class="fas fa-calendar-check"></i> Daily Planning</h2>
+    <div class="page-actions">
+        <div class="view-controls">
+            <button class="view-control-btn active" data-section="suggestion">
+                <i class="fas fa-lightbulb"></i> Suggestion
+            </button>
+            <button class="view-control-btn active" data-section="form">
+                <i class="fas fa-plus"></i> New Target
+            </button>
+            <button class="view-control-btn active" data-section="live-targets">
+                <i class="fas fa-bolt"></i> Live Targets
+            </button>
+            <button class="view-control-btn active" data-section="history">
+                <i class="fas fa-history"></i> History
+            </button>
+            <button class="btn btn-accent" id="generate-suggestion-btn">
+                <i class="fas fa-magic"></i> New Suggestion
+            </button>
+        </div>
+    </div>
+</div>
                     
                     <!-- Planning Statistics -->
                     <div class="planning-stats">
@@ -2813,7 +2916,151 @@
         </div>
     </div>
 </div>
+<!-- Daily Suggestion Card -->
+<div class="target-setup-card" id="suggestion-card">
+    <div class="target-setup-header" id="suggestion-toggle">
+        <h3><i class="fas fa-lightbulb"></i> Today's Study Suggestion</h3>
+        <i class="fas fa-chevron-down"></i>
+    </div>
+    <div class="target-setup-content expanded" id="suggestion-content">
+        <div id="suggestion-message" style="text-align: center; padding: 20px; color: var(--gray);">
+            Generating your personalized study suggestion...
+        </div>
+        
+        <div id="suggestion-details" style="display: none; margin-top: 20px;">
+            <div style="background: linear-gradient(135deg, #3498db, #2c3e50); border-radius: 16px; padding: 25px; color: white;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <h4 style="margin: 0; color: white; font-size: 18px;">Recommended for Today</h4>
+                        <div style="font-size: 14px; opacity: 0.9;">Based on your study patterns</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; font-weight: 600;">
+                        <i class="fas fa-brain"></i> Smart Plan
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 25px;">
+                    <div class="suggestion-item">
+                        <div><i class="fas fa-book"></i> <strong>Subject:</strong> <span id="suggestion-subject">-</span></div>
+                    </div>
+                    <div class="suggestion-item">
+                        <div><i class="fas fa-layer-group"></i> <strong>Topic:</strong> <span id="suggestion-topic">-</span></div>
+                    </div>
+                    <div class="suggestion-item">
+                        <div><i class="fas fa-tag"></i> <strong>Focus:</strong> <span id="suggestion-focus">-</span></div>
+                    </div>
+                    <div class="suggestion-item">
+                        <div><i class="fas fa-clock"></i> <strong>Suggested Time:</strong> <span id="suggestion-time">-</span></div>
+                    </div>
+                </div>
+                
+                <div id="suggestion-reason" style="font-size: 14px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; margin-top: 15px;">
+                    <i class="fas fa-info-circle"></i> <span id="suggestion-reason-text">Loading...</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 25px; display: flex; gap: 15px; flex-wrap: wrap;">
+                <button class="btn btn-success" id="accept-suggestion-btn" style="flex: 1;">
+                    <i class="fas fa-check-circle"></i> Accept & Create Target
+                </button>
+                <button class="btn btn-accent" id="customize-suggestion-btn" style="flex: 1;">
+                    <i class="fas fa-edit"></i> Customize
+                </button>
+                <button class="btn" id="shuffle-suggestion-btn" style="flex: 1;">
+                    <i class="fas fa-random"></i> Shuffle
+                </button>
+            </div>
+            
+            <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                <button class="btn-small" data-subject="paper1">Paper 1</button>
+                <button class="btn-small" data-subject="paper2">Paper 2</button>
+                <button class="btn-small" data-subject="paper3">Paper 3</button>
+                <button class="btn-small" data-subject="paper4">Paper 4</button>
+                <button class="btn-small" data-subject="paper5">Paper 5</button>
+                <button class="btn-small" data-subject="paper6">Paper 6</button>
+            </div>
+        </div>
+        
+        <div id="suggestion-history" style="margin-top: 25px; display: none;">
+            <h4 style="color: var(--primary); margin-bottom: 15px;">Recent Suggestions</h4>
+            <div id="suggestion-history-list" style="max-height: 200px; overflow-y: auto;">
+                <!-- Suggestions history will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Customize Suggestion Modal -->
+<div class="modal" id="customize-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-sliders-h"></i> Customize Suggestion</h3>
+            <button class="modal-close" id="customize-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Priority Factors (Adjust weights 0-100%)</label>
+                <div style="display: grid; gap: 15px; margin-top: 15px;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>Subject Weightage</span>
+                            <span id="weight-weightage-value">30%</span>
+                        </div>
+                        <input type="range" id="weight-weightage" min="0" max="100" value="30" class="slider">
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>Progress Status</span>
+                            <span id="weight-progress-value">25%</span>
+                        </div>
+                        <input type="range" id="weight-progress" min="0" max="100" value="25" class="slider">
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>Study Consistency</span>
+                            <span id="weight-consistency-value">20%</span>
+                        </div>
+                        <input type="range" id="weight-consistency" min="0" max="100" value="20" class="slider">
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>Recent History</span>
+                            <span id="weight-recent-value">15%</span>
+                        </div>
+                        <input type="range" id="weight-recent" min="0" max="100" value="15" class="slider">
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>Remark Pattern</span>
+                            <span id="weight-remark-value">10%</span>
+                        </div>
+                        <input type="range" id="weight-remark" min="0" max="100" value="10" class="slider">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Focus Preference</label>
+                <select id="focus-preference" class="subject-dropdown">
+                    <option value="balanced">Balanced Approach</option>
+                    <option value="catchup">Catch Up (Behind Topics)</option>
+                    <option value="weakareas">Weak Areas</option>
+                    <option value="revision">Revision Focus</option>
+                    <option value="practice">Practice (MTP/RTP/PYQ)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="custom-time">Custom Study Time (hours)</label>
+                <input type="number" id="custom-time" min="0.5" max="8" step="0.5" value="2" class="subject-dropdown">
+            </div>
+            
+            <button class="btn btn-success" id="apply-customization-btn" style="width: 100%;">
+                <i class="fas fa-check"></i> Apply & Generate New Suggestion
+            </button>
+        </div>
+    </div>
+</div>
 <!-- Success Rate Card (existing) -->
 <div class="target-setup-card">
     <div class="target-setup-header">
@@ -4493,7 +4740,117 @@ static async save(storeName, data) {
             document.getElementById('save-target-btn').addEventListener('click', saveTarget);
             document.getElementById('target-status-filter').addEventListener('change', loadTargets);
             document.getElementById('target-subject-filter').addEventListener('change', loadTargets);
-            
+            // Suggestion system event listeners
+document.getElementById('suggestion-toggle')?.addEventListener('click', function() {
+    const content = document.getElementById('suggestion-content');
+    const icon = this.querySelector('i');
+    content.classList.toggle('expanded');
+    icon.classList.toggle('fa-chevron-down');
+    icon.classList.toggle('fa-chevron-up');
+});
+
+document.getElementById('accept-suggestion-btn')?.addEventListener('click', acceptSuggestion);
+
+document.getElementById('shuffle-suggestion-btn')?.addEventListener('click', function() {
+    const suggestion = generateSmartSuggestion();
+    displaySuggestion(suggestion);
+    showToast('New suggestion generated!', 'success');
+});
+
+document.getElementById('generate-suggestion-btn')?.addEventListener('click', function() {
+    const suggestion = generateSmartSuggestion();
+    displaySuggestion(suggestion);
+    showToast('New suggestion generated!', 'success');
+});
+
+document.getElementById('customize-suggestion-btn')?.addEventListener('click', function() {
+    document.getElementById('customize-modal').classList.add('active');
+});
+
+document.getElementById('customize-close')?.addEventListener('click', function() {
+    document.getElementById('customize-modal').classList.remove('active');
+});
+
+document.getElementById('apply-customization-btn')?.addEventListener('click', function() {
+    suggestionWeights = {
+        weightage: parseInt(document.getElementById('weight-weightage').value),
+        progress: parseInt(document.getElementById('weight-progress').value),
+        consistency: parseInt(document.getElementById('weight-consistency').value),
+        recent: parseInt(document.getElementById('weight-recent').value),
+        remark: parseInt(document.getElementById('weight-remark').value)
+    };
+    
+    document.getElementById('customize-modal').classList.remove('active');
+    
+    const focus = document.getElementById('focus-preference').value;
+    const customTime = parseFloat(document.getElementById('custom-time').value) || 2;
+    
+    // Regenerate with custom settings
+    const suggestion = generateSmartSuggestion();
+    suggestion.suggestedHours = customTime;
+    displaySuggestion(suggestion);
+    
+    showToast('Custom preferences applied!', 'success');
+});
+
+// Subject buttons for quick filtering
+document.querySelectorAll('.btn-small[data-subject]').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const subjectId = this.getAttribute('data-subject');
+        const suggestion = generateSmartSuggestion(subjectId);
+        displaySuggestion(suggestion);
+        showToast(`Generated suggestion for ${getSubjectName(subjectId)}`, 'success');
+    });
+});
+
+// Hide/Show controls
+document.querySelectorAll('.view-control-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const section = this.getAttribute('data-section');
+        const isActive = this.classList.contains('active');
+        
+        if (isActive) {
+            this.classList.remove('active');
+            hideSection(section);
+        } else {
+            this.classList.add('active');
+            showSection(section);
+        }
+    });
+});
+
+function hideSection(section) {
+    if (section === 'suggestion') {
+        document.getElementById('suggestion-card').classList.add('collapsed');
+    } else if (section === 'form') {
+        document.getElementById('planning-form').classList.add('collapsed');
+    } else if (section === 'live-targets') {
+        document.querySelector('.target-list-container').classList.add('collapsed');
+    } else if (section === 'history') {
+        document.querySelectorAll('.target-list-container')[1]?.classList.add('collapsed');
+    }
+}
+
+function showSection(section) {
+    if (section === 'suggestion') {
+        document.getElementById('suggestion-card').classList.remove('collapsed');
+    } else if (section === 'form') {
+        document.getElementById('planning-form').classList.remove('collapsed');
+    } else if (section === 'live-targets') {
+        document.querySelector('.target-list-container').classList.remove('collapsed');
+    } else if (section === 'history') {
+        document.querySelectorAll('.target-list-container')[1]?.classList.remove('collapsed');
+    }
+}
+
+// Initialize suggestion on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Generate initial suggestion after a delay
+    setTimeout(() => {
+        const suggestion = generateSmartSuggestion();
+        displaySuggestion(suggestion);
+    }, 1000);
+});
             // Videos
             document.getElementById('video-toggle').addEventListener('click', () => {
                 document.getElementById('video-toggle').classList.toggle('expanded');
@@ -6142,14 +6499,20 @@ chartData = {
         }
         
         // ==================== PLANNING PAGE FUNCTIONS ====================
-       function loadPlanningPage() {
+function loadPlanningPage() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('target-date').value = today;
     
     loadTopicsForPlanning();
     loadTargets();
     loadTargetHistory();
-    updateRemarkSummary(); // ADD THIS LINE
+    updateRemarkSummary();
+    
+    // Generate and display suggestion
+    if (document.getElementById('suggestion-card')) {
+        const suggestion = generateSmartSuggestion();
+        displaySuggestion(suggestion);
+    }
 }
         
         function loadTopicsForPlanning() {
@@ -6514,6 +6877,15 @@ document.querySelectorAll('.auto-update-subtopic-btn').forEach((btn, index) => {
         }
     }
 }
+// Update slider value displays
+document.querySelectorAll('input[type="range"]').forEach(slider => {
+    slider.addEventListener('input', function() {
+        const valueDisplay = document.getElementById(`${this.id}-value`);
+        if (valueDisplay) {
+            valueDisplay.textContent = `${this.value}%`;
+        }
+    });
+});
 
             // Add event listeners for auto-update subtopic buttons
             document.querySelectorAll('.auto-update-subtopic-btn').forEach((btn, index) => {
@@ -6854,6 +7226,399 @@ function shouldSaveToHistory(target) {
             }
         });
     }
+}
+// ==================== SMART SUGGESTION SYSTEM ====================
+let suggestionWeights = {
+    weightage: 30,    // Subject weight from syllabus
+    progress: 25,     // Current progress status
+    consistency: 20,  // Study consistency (heatmap)
+    recent: 15,       // Recent study history
+    remark: 10        // Remark patterns
+};
+
+let suggestionHistory = [];
+let lastSuggestion = null;
+
+function generateSmartSuggestion(preferredSubject = null) {
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Get all possible subtopics with scores
+    const allSuggestions = [];
+    
+    // Loop through all subjects and topics
+    for (const subjectId in syllabusData) {
+        if (preferredSubject && subjectId !== preferredSubject) continue;
+        
+        const subject = syllabusData[subjectId];
+        const subjectProgress = userProgress.subjects[subjectId] || { topics: {} };
+        
+        // Calculate subject priority based on progress
+        const plannedHours = userStudyPlan?.subjectHours?.[subjectId] || 0;
+        const actualHours = calculateSubjectHours(subjectId);
+        const progressRatio = plannedHours > 0 ? (actualHours / plannedHours) : 0;
+        
+        subject.topics.forEach(topic => {
+            const topicProgress = subjectProgress.topics[topic.name] || { subtopics: {} };
+            
+            topic.subtopics.forEach(subtopic => {
+                const subtopicProgress = topicProgress.subtopics[subtopic.name] || { 
+                    actualHours: 0, 
+                    completed: false,
+                    lastUpdated: null 
+                };
+                
+                // Calculate scores for each factor (0-100)
+                const weightageScore = calculateWeightageScore(subject, topic, subtopic);
+                const progressScore = calculateProgressScore(subtopicProgress, topic, subjectId);
+                const consistencyScore = calculateConsistencyScore();
+                const recentScore = calculateRecentScore(subtopicProgress.lastUpdated);
+                const remarkScore = calculateRemarkScore(subjectId, topic.name);
+                
+                // Weighted total score
+                const totalScore = 
+                    (weightageScore * suggestionWeights.weightage / 100) +
+                    (progressScore * suggestionWeights.progress / 100) +
+                    (consistencyScore * suggestionWeights.consistency / 100) +
+                    (recentScore * suggestionWeights.recent / 100) +
+                    (remarkScore * suggestionWeights.remark / 100);
+                
+                // Determine focus type based on progress
+                let focusType = "New Learning";
+                let suggestedHours = 2; // Default
+                
+                if (subtopicProgress.actualHours > 0 && subtopicProgress.actualHours < 2) {
+                    focusType = "Concepts";
+                    suggestedHours = 2;
+                } else if (subtopicProgress.actualHours >= 2 && subtopicProgress.actualHours < 4) {
+                    focusType = "Practice";
+                    suggestedHours = 1.5;
+                } else if (subtopicProgress.actualHours >= 4) {
+                    focusType = "Revision";
+                    suggestedHours = 1;
+                }
+                
+                // Adjust based on remark patterns
+                const lastRemark = getLastRemarkForSubtopic(subjectId, topic.name, subtopic.name);
+                if (lastRemark === "Concepts" && focusType === "Practice") {
+                    focusType = "MTP/RTP Practice";
+                    suggestedHours = 2;
+                } else if (lastRemark === "MTP" || lastRemark === "RTP" || lastRemark === "PYQ") {
+                    focusType = "PYQ Mastery";
+                    suggestedHours = 2.5;
+                }
+                
+                allSuggestions.push({
+                    subjectId,
+                    subjectName: subject.name,
+                    topic: topic.name,
+                    subtopic: subtopic.name,
+                    score: totalScore,
+                    focusType,
+                    suggestedHours,
+                    progressRatio,
+                    lastStudied: subtopicProgress.lastUpdated,
+                    reason: generateSuggestionReason(subject, topic, subtopic, progressRatio, focusType)
+                });
+            });
+        });
+    }
+    
+    // Sort by score descending
+    allSuggestions.sort((a, b) => b.score - a.score);
+    
+    // Get top 3 suggestions
+    const topSuggestions = allSuggestions.slice(0, 3);
+    
+    // Pick one randomly from top 3 (weighted by score)
+    let selectedIndex = 0;
+    const totalScore = topSuggestions.reduce((sum, s) => sum + s.score, 0);
+    const random = Math.random() * totalScore;
+    let cumulative = 0;
+    
+    for (let i = 0; i < topSuggestions.length; i++) {
+        cumulative += topSuggestions[i].score;
+        if (random <= cumulative) {
+            selectedIndex = i;
+            break;
+        }
+    }
+    
+    const suggestion = topSuggestions[selectedIndex];
+    lastSuggestion = suggestion;
+    
+    // Add to history
+    suggestionHistory.unshift({
+        ...suggestion,
+        generatedDate: today,
+        accepted: false
+    });
+    
+    // Keep only last 10 suggestions
+    if (suggestionHistory.length > 10) {
+        suggestionHistory.pop();
+    }
+    
+    return suggestion;
+}
+
+// Helper functions for suggestion system
+function calculateSubjectHours(subjectId) {
+    let total = 0;
+    const subjectProgress = userProgress.subjects[subjectId];
+    if (!subjectProgress) return 0;
+    
+    for (const topicName in subjectProgress.topics) {
+        const topic = subjectProgress.topics[topicName];
+        if (topic.subtopics) {
+            for (const subtopicName in topic.subtopics) {
+                total += topic.subtopics[subtopicName].actualHours || 0;
+            }
+        }
+    }
+    return total;
+}
+
+function calculateWeightageScore(subject, topic, subtopic) {
+    // Higher weightage = higher score
+    const subjectWeight = subject.weightage / 100;
+    const topicWeight = topic.weightage / 100;
+    const subtopicWeight = subtopic.weight / 100;
+    
+    return (subjectWeight * topicWeight * subtopicWeight) * 100;
+}
+
+function calculateProgressScore(subtopicProgress, topic, subjectId) {
+    // Lower progress = higher score (need to study more)
+    const plannedHours = (topic.weightage / 100) * 
+                        (subtopicProgress.weight || 100 / 100) * 
+                        (userStudyPlan?.subjectHours?.[subjectId] || 0);
+    
+    if (plannedHours === 0) return 100;
+    
+    const progressRatio = subtopicProgress.actualHours / plannedHours;
+    
+    if (progressRatio === 0) return 100; // Not started
+    if (progressRatio < 0.5) return 80;  // Started but behind
+    if (progressRatio < 0.8) return 50;  // Average progress
+    if (progressRatio < 1) return 20;    // Almost done
+    return 10; // Completed
+}
+
+function calculateConsistencyScore() {
+    // Higher streak = higher score for challenging topics
+    const streak = userStats.currentStreak || 0;
+    
+    if (streak >= 7) return 100;
+    if (streak >= 5) return 80;
+    if (streak >= 3) return 60;
+    if (streak >= 1) return 40;
+    return 20; // No streak, suggest easier topics
+}
+
+function calculateRecentScore(lastUpdated) {
+    if (!lastUpdated) return 100; // Never studied
+    
+    const lastDate = new Date(lastUpdated);
+    const today = new Date();
+    const diffDays = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays > 14) return 100; // Not studied in 2 weeks
+    if (diffDays > 7) return 80;   // Not studied in 1 week
+    if (diffDays > 3) return 40;   // Studied recently
+    if (diffDays > 1) return 20;   // Studied very recently
+    return 10; // Studied today or yesterday
+}
+
+function calculateRemarkScore(subjectId, topicName) {
+    // Check remark patterns for this topic
+    const allTargets = [...userTargets, ...completedTargets];
+    const topicTargets = allTargets.filter(t => 
+        t.subject === subjectId && t.topic === topicName
+    );
+    
+    if (topicTargets.length === 0) return 100; // No targets yet
+    
+    // Analyze remark patterns
+    const remarks = topicTargets.map(t => t.remark || 'General');
+    const remarkCounts = {};
+    
+    remarks.forEach(remark => {
+        remarkCounts[remark] = (remarkCounts[remark] || 0) + 1;
+    });
+    
+    // If mostly "Concepts", suggest "Practice"
+    if (remarkCounts["Concepts"] && remarkCounts["Concepts"] > remarks.length * 0.7) {
+        return 90;
+    }
+    // If mostly "Practice", suggest "Revision"
+    else if ((remarkCounts["MTP"] || 0) + (remarkCounts["RTP"] || 0) + (remarkCounts["PYQ"] || 0) > remarks.length * 0.6) {
+        return 80;
+    }
+    // If mixed, continue with balanced approach
+    else {
+        return 50;
+    }
+}
+
+function getLastRemarkForSubtopic(subjectId, topicName, subtopicName) {
+    const allTargets = [...userTargets, ...completedTargets];
+    
+    for (let i = allTargets.length - 1; i >= 0; i--) {
+        const target = allTargets[i];
+        if (target.subject === subjectId && 
+            target.topic === topicName && 
+            target.subtopic === subtopicName) {
+            return target.remark || 'General';
+        }
+    }
+    return null;
+}
+
+function generateSuggestionReason(subject, topic, subtopic, progressRatio, focusType) {
+    const reasons = [];
+    
+    if (progressRatio === 0) {
+        reasons.push("Not started yet - time to begin!");
+    } else if (progressRatio < 0.5) {
+        reasons.push("Behind schedule - needs attention");
+    } else if (progressRatio < 0.8) {
+        reasons.push("Good progress - keep building momentum");
+    } else {
+        reasons.push("Almost complete - finish strong");
+    }
+    
+    if (topic.priority === "A") {
+        reasons.push("High priority topic in syllabus");
+    }
+    
+    if (focusType.includes("Practice")) {
+        reasons.push("Perfect for practice questions now");
+    } else if (focusType.includes("Revision")) {
+        reasons.push("Ready for revision to reinforce learning");
+    }
+    
+    return reasons.join(". ");
+}
+
+function displaySuggestion(suggestion) {
+    if (!suggestion) return;
+    
+    document.getElementById('suggestion-subject').textContent = suggestion.subjectName;
+    document.getElementById('suggestion-topic').textContent = suggestion.topic;
+    document.getElementById('suggestion-focus').textContent = suggestion.focusType;
+    document.getElementById('suggestion-time').textContent = `${suggestion.suggestedHours} hours`;
+    document.getElementById('suggestion-reason-text').textContent = suggestion.reason;
+    
+    document.getElementById('suggestion-message').style.display = 'none';
+    document.getElementById('suggestion-details').style.display = 'block';
+    document.getElementById('suggestion-history').style.display = 'block';
+    
+    // Update suggestion history
+    updateSuggestionHistory();
+}
+
+function updateSuggestionHistory() {
+    const container = document.getElementById('suggestion-history-list');
+    
+    if (suggestionHistory.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--gray);">No suggestions yet</p>';
+        return;
+    }
+    
+    let html = '';
+    suggestionHistory.slice(0, 5).forEach((item, index) => {
+        html += `
+            <div class="suggestion-history-item">
+                <div>
+                    <div style="font-weight: 600;">${item.topic}</div>
+                    <div style="font-size: 12px; color: var(--gray);">
+                        ${item.subjectName.split(':')[0]} • ${item.focusType}
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="suggestion-history-date">
+                        ${formatDate(item.generatedDate)}
+                    </div>
+                    <div style="font-size: 12px; color: ${item.accepted ? 'var(--success)' : 'var(--gray)'};">
+                        ${item.accepted ? '✓ Accepted' : 'Not used'}
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+async function acceptSuggestion() {
+    if (!lastSuggestion) {
+        showToast('No suggestion available', 'error');
+        return;
+    }
+    
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Create target from suggestion
+    const target = {
+        id: Date.now(),
+        subject: lastSuggestion.subjectId,
+        topic: lastSuggestion.topic,
+        subtopic: lastSuggestion.subtopic,
+        date: today,
+        plannedHours: lastSuggestion.suggestedHours,
+        actualHours: 0,
+        completed: false,
+        status: 'active',
+        created: new Date().toISOString(),
+        autoUpdateSubtopic: true,
+        remark: getAppropriateRemark(lastSuggestion.focusType),
+        isFromSuggestion: true
+    };
+    
+    userTargets.push(target);
+    
+    // Mark as accepted in history
+    if (suggestionHistory.length > 0) {
+        suggestionHistory[0].accepted = true;
+        suggestionHistory[0].targetId = target.id;
+    }
+    
+    await DataStorage.manualSave('targets', userTargets, (success) => {
+        if (success) {
+            loadTargets();
+            updateSuggestionHistory();
+            
+            showToast('Target created from suggestion!', 'success');
+            
+            // Auto-fill the form if user wants to customize
+            document.getElementById('planning-subject').value = lastSuggestion.subjectId;
+            loadTopicsForPlanning();
+            
+            setTimeout(() => {
+                document.getElementById('planning-topic').value = lastSuggestion.topic;
+                loadSubtopicsForPlanning();
+                
+                setTimeout(() => {
+                    document.getElementById('planning-subtopic').value = lastSuggestion.subtopic;
+                    document.getElementById('planned-hours-input').value = lastSuggestion.suggestedHours;
+                    document.getElementById('remark-select').value = getAppropriateRemark(lastSuggestion.focusType);
+                }, 500);
+            }, 500);
+        }
+    });
+}
+
+function getAppropriateRemark(focusType) {
+    if (focusType.includes("Practice") || focusType.includes("MTP") || focusType.includes("RTP")) {
+        return "Practice";
+    } else if (focusType.includes("Concepts")) {
+        return "Concepts";
+    } else if (focusType.includes("Revision")) {
+        return "Revision";
+    } else if (focusType.includes("PYQ")) {
+        return "PYQ";
+    }
+    return "Concepts";
 }
         // ==================== VIDEOS & RESOURCES FUNCTIONS ====================
         function loadVideos() {
