@@ -5733,38 +5733,39 @@ if (userResources.length === 0) {
                 const backgroundColors = actualHours.map((actual, index) => {
     const suggested = suggestedHours[index];
     const achievement = suggested > 0 ? actual / suggested : 0;
-    
-    // Always use green color for actual hours with varying opacity based on achievement
-    if (achievement >= 1) return 'rgba(46, 204, 113, 0.9)';  // Darker green for 100%+
-    if (achievement >= 0.8) return 'rgba(46, 204, 113, 0.7)'; // Green for 80-99%
-    if (achievement >= 0.6) return 'rgba(46, 204, 113, 0.6)'; // Lighter green for 60-79%
-    if (achievement >= 0.4) return 'rgba(46, 204, 113, 0.5)'; // Even lighter for 40-59%
-    if (achievement >= 0.2) return 'rgba(46, 204, 113, 0.4)'; // Very light for 20-39%
-    return 'rgba(46, 204, 113, 0.3)'; // Lightest green for 0-19%
+
+    // Deep, vibrant colors for different achievement stages
+    if (achievement >= 1) return 'rgba(34, 139, 34, 0.85)';      // Deep Forest Green for 100%+
+    if (achievement >= 0.8) return 'rgba(30, 144, 255, 0.85)';   // Deep Blue for 80-99%
+    if (achievement >= 0.6) return 'rgba(138, 43, 226, 0.85)';   // Deep Violet for 60-79%
+    if (achievement >= 0.4) return 'rgba(255, 140, 0, 0.85)';    // Deep Orange for 40-59%
+    if (achievement >= 0.2) return 'rgba(160, 82, 45, 0.85)';    // Deep Sienna Brown for 20-39%
+    return 'rgba(139, 69, 19, 0.85)';                             // Deep Saddle Brown for 0-19%
 });
-                
-                chartData = {
-                    labels: subjectNames,
-                    datasets: [
-                        {
-                            label: 'Suggested Hours',
-                            data: suggestedHours,
-                            backgroundColor: 'rgba(149, 165, 166, 0.3)',
-                            borderColor: 'rgba(149, 165, 166, 1)',
-                            borderWidth: 2,
-                            borderRadius: 8,
-                            borderDash: [5, 5]
-                        },
-                        {
-                            label: 'Actual Hours',
-                            data: actualHours,
-                            backgroundColor: backgroundColors,
-                            borderColor: backgroundColors.map(color => color.replace('0.7', '1').replace('0.5', '1')),
-                            borderWidth: 2,
-                            borderRadius: 8
-                        }
-                    ]
-                };
+
+chartData = {
+    labels: subjectNames,
+    datasets: [
+        {
+            label: 'Suggested Hours',
+            data: suggestedHours,
+            backgroundColor: 'rgba(255, 215, 0, 0.4)',      // Bright Gold
+            borderColor: 'rgba(255, 215, 0, 1)',
+            borderWidth: 2,
+            borderRadius: 8,
+            borderDash: [5, 5]
+        },
+        {
+            label: 'Actual Hours',
+            data: actualHours,
+            backgroundColor: backgroundColors,
+            borderColor: backgroundColors.map(color => color.replace(/0\.\d+\)/, '1)')),
+            borderWidth: 2,
+            borderRadius: 8
+        }
+    ]
+};
+
                 
                 chartOptions = {
                     responsive: true,
@@ -6384,13 +6385,37 @@ if (remark === 'custom') {
             targetsList.innerHTML = html;
             
             document.querySelectorAll('.save-target-hours-btn').forEach((btn, index) => {
-                btn.addEventListener('click', function() {
-                    const targetIndex = this.closest('.target-item').getAttribute('data-index');
-                    const input = this.parentElement.querySelector('.actual-hours-input');
-                    const hours = parseFloat(input.value) || 0;
-                    updateTargetHours(targetIndex, hours);
-                });
-                      });
+    btn.addEventListener('click', async function() {
+        const targetItem = this.closest('.target-item');
+        const targetIndex = targetItem.getAttribute('data-index');
+        const input = this.parentElement.querySelector('.actual-hours-input');
+        const hours = parseFloat(input.value) || 0;
+        
+        // Temporarily change button to show saving
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        this.disabled = true;
+        
+        try {
+            await updateTargetHours(targetIndex, hours);
+            
+            // Restore button
+            this.innerHTML = 'Save';
+            this.disabled = false;
+            
+            // Update remark summary if available
+            if (typeof updateRemarkSummary === 'function') {
+                updateRemarkSummary();
+            }
+        } catch (error) {
+            console.error('Error saving target hours:', error);
+            this.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error';
+            setTimeout(() => {
+                this.innerHTML = 'Save';
+                this.disabled = false;
+            }, 2000);
+        }
+    });
+});
             
                     document.querySelectorAll('.complete-target-btn').forEach((btn, index) => {
                 btn.addEventListener('click', async function() {
@@ -6399,104 +6424,97 @@ if (remark === 'custom') {
                 });
             });
             
-            // Add event listeners for auto-update subtopic buttons
-            document.querySelectorAll('.auto-update-subtopic-btn').forEach((btn, index) => {
-                btn.addEventListener('click', async function() {
-                    const targetIndex = this.closest('.target-item').getAttribute('data-index');
-                    const target = userTargets[targetIndex];
-                    
-                    if (target && target.subtopic) {
-                        // Temporarily change button to show updating
-                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
-                        this.disabled = true;
-                        
-                        // Update the subtopic without completing the target
-                        await updateSubtopicFromCompletedTarget(target);
-                        
-                        // Restore button
-                        this.innerHTML = '<i class="fas fa-check"></i> Updated!';
-                        setTimeout(() => {
-                            this.innerHTML = '<i class="fas fa-sync-alt"></i> Update Subtopic';
-                            this.disabled = false;
-                        }, 2000);
-                        
-                        showToast(`Subtopic "${target.subtopic}" updated with ${target.actualHours || 0} hours`, 'success');
-                    }
-                });
-            });
+          // Add event listeners for auto-update subtopic buttons
+document.querySelectorAll('.auto-update-subtopic-btn').forEach((btn, index) => {
+    btn.addEventListener('click', async function() {
+        const targetItem = this.closest('.target-item');
+        const targetIndex = targetItem.getAttribute('data-index');
+        const target = userTargets[targetIndex];
+        
+        if (target && target.subtopic) {
+            // Get the current actual hours from the input field
+            const actualHoursInput = targetItem.querySelector('.actual-hours-input');
+            const hours = parseFloat(actualHoursInput.value) || 0;
             
-            // Add the completeTarget function
-            async function completeTarget(index) {
-                if (index >= 0 && index < userTargets.length) {
-                    const target = userTargets[index];
-                    target.completed = true;
-                    target.status = 'completed';
-                    
-                    // Auto-update the corresponding subtopic in Subjects tab
-                    if (target.autoUpdateSubtopic !== false && target.subtopic && 
-                        target.subject && target.topic && target.actualHours > 0) {
-                        await updateSubtopicFromCompletedTarget(target);
-                    }
-                    
-                    // Move target from userTargets to completedTargets
-                    const completedTarget = { ...target };
-                    completedTargets.push(completedTarget);
-                    userTargets.splice(index, 1);
-                    
-                    try {
-                        // Save ALL changes to IndexedDB
-                        await DataStorage.manualSave('targets', userTargets);
-                        await DataStorage.manualSave('completedTargets', completedTargets);
-                        
-                        // Update UI
-                        loadTargets();
-                        loadTargetHistory();
-                        updateDashboard();
-                        
-                        showToast('Target marked as complete! Subtopic updated in Subjects tab.', 'success');
-                    } catch (error) {
-                        console.error('Error saving completed target:', error);
-                        showToast('Error saving completed target. Please try again.', 'error');
-                    }
-                }
-            }
+            // Update target's actual hours
+            target.actualHours = hours;
             
+            // Temporarily change button to show updating
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+            this.disabled = true;
+            
+            try {
+                // Save the updated target first
+                await DataStorage.manualSave('targets', userTargets);
                 
-              // Add the completeTarget function
-            async function completeTarget(index) {
-                if (index >= 0 && index < userTargets.length) {
-                    const target = userTargets[index];
-                    target.completed = true;
-                    target.status = 'completed';
-                    
-                    // Auto-update the corresponding subtopic in Subjects tab
-                    if (target.autoUpdateSubtopic !== false && target.subtopic && 
-                        target.subject && target.topic && target.actualHours > 0) {
-                        await updateSubtopicFromCompletedTarget(target);
-                    }
-                    
-                    // Move target from userTargets to completedTargets
-                    const completedTarget = { ...target };
-                    completedTargets.push(completedTarget);
-                    userTargets.splice(index, 1);
-                    
-                    try {
-                        // Save ALL changes to IndexedDB
-                        await DataStorage.manualSave('targets', userTargets);
-                        await DataStorage.manualSave('completedTargets', completedTargets);
-                        
-                        // Update UI
-                        loadTargets();
-                        loadTargetHistory();
-                        updateDashboard();
-                        
-                        showToast('Target marked as complete! Subtopic updated in Subjects tab.', 'success');
-                    } catch (error) {
-                        console.error('Error saving completed target:', error);
-                        showToast('Error saving completed target. Please try again.', 'error');
-                    }
-                }
+                // Now update the subtopic
+                await updateSubtopicFromCompletedTarget(target);
+                
+                // Update the UI
+                loadTargets();
+                loadTargetHistory();
+                updateDashboard();
+                updateRemarkSummary();
+                
+                // Restore button
+                this.innerHTML = '<i class="fas fa-check"></i> Updated!';
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-sync-alt"></i> Update Subtopic';
+                    this.disabled = false;
+                }, 2000);
+                
+                showToast(`Subtopic "${target.subtopic}" updated with ${hours} hours`, 'success');
+            } catch (error) {
+                console.error('Error updating subtopic:', error);
+                this.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error';
+                this.disabled = false;
+                showToast('Error updating subtopic', 'error');
             }
+        } else {
+            showToast('Target does not have a subtopic to update', 'warning');
+        }
+    });
+});
+            
+   async function completeTarget(index) {
+    if (index >= 0 && index < userTargets.length) {
+        const target = userTargets[index];
+
+        // Mark as completed
+        target.completed = true;
+        target.status = 'completed';
+        target.completedDate = new Date().toISOString();
+
+        // Auto-update the corresponding subtopic in Subjects tab
+        if (target.autoUpdateSubtopic !== false && target.subtopic && 
+            target.subject && target.topic && target.actualHours > 0) {
+            await updateSubtopicFromCompletedTarget(target);
+        }
+
+        // Move target from userTargets to completedTargets
+        const completedTarget = { ...target };
+        completedTargets.push(completedTarget);
+        userTargets.splice(index, 1);
+
+        try {
+            // Save ALL changes to IndexedDB
+            await DataStorage.manualSave('targets', userTargets);
+            await DataStorage.manualSave('completedTargets', completedTargets);
+
+            // Update UI
+            loadTargets();
+            loadTargetHistory();  // Refresh history
+            updateDashboard();
+            updateRemarkSummary(); // Refresh remark summary
+
+            showToast('Target marked as complete! Subtopic updated in Subjects tab.', 'success');
+        } catch (error) {
+            console.error('Error saving completed target:', error);
+            showToast('Error saving completed target. Please try again.', 'error');
+        }
+    }
+}
+
             // Add event listeners for auto-update subtopic buttons
             document.querySelectorAll('.auto-update-subtopic-btn').forEach((btn, index) => {
                 btn.addEventListener('click', async function() {
@@ -6570,95 +6588,103 @@ async function deleteTarget(index) {
         }
     }
 }   
-               // Function to automatically update subtopic hours from completed target
-        async function updateSubtopicFromCompletedTarget(target) {
-            // Only update if the target has subject, topic, and subtopic
-            if (!target.subject || !target.topic || !target.subtopic) {
-                console.log('Target missing subject, topic, or subtopic information. Skipping auto-update.');
-                return;
+              async function updateSubtopicFromCompletedTarget(target) {
+    // Only update if the target has subject, topic, and subtopic
+    if (!target.subject || !target.topic || !target.subtopic) {
+        console.log('Target missing subject, topic, or subtopic information. Skipping auto-update.');
+        return;
+    }
+    
+    const subjectId = target.subject;
+    const topicName = target.topic;
+    const subtopicName = target.subtopic;
+    const targetHours = target.actualHours || 0;
+    
+    // Find the subject in syllabus data
+    if (!syllabusData[subjectId]) {
+        console.log(`Subject ${subjectId} not found in syllabus. Skipping auto-update.`);
+        return;
+    }
+    
+    // Find the topic in the subject
+    const subject = syllabusData[subjectId];
+    const topic = subject.topics.find(t => t.name === topicName);
+    
+    if (!topic) {
+        console.log(`Topic "${topicName}" not found in subject ${subjectId}. Skipping auto-update.`);
+        return;
+    }
+    
+    // Find the subtopic in the topic
+    const subtopic = topic.subtopics.find(st => st.name === subtopicName);
+    
+    if (!subtopic) {
+        console.log(`Subtopic "${subtopicName}" not found in topic "${topicName}". Skipping auto-update.`);
+        return;
+    }
+    
+    // Initialize progress structure if it doesn't exist
+    if (!userProgress.subjects[subjectId]) {
+        userProgress.subjects[subjectId] = { 
+            topics: {}, 
+            completedTopics: 0, 
+            totalTopics: syllabusData[subjectId].topics.length 
+        };
+    }
+    
+    if (!userProgress.subjects[subjectId].topics[topicName]) {
+        userProgress.subjects[subjectId].topics[topicName] = { 
+            status: 'not-started', 
+            totalHours: 0,
+            subtopics: {} 
+        };
+    }
+    
+    if (!userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName]) {
+        userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName] = { 
+            actualHours: 0, 
+            completed: false,
+            lastUpdated: null
+        };
+    }
+    
+    // Get current hours and ADD the new hours (don't replace)
+    const currentHours = userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours || 0;
+    const newTotalHours = currentHours + targetHours;
+    
+    // Update the subtopic by ADDING actual hours from the target (not replacing)
+    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = newTotalHours;
+    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = newTotalHours > 0;
+    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].lastUpdated = new Date().toISOString();
+    userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].autoUpdated = true; // Mark as auto-updated
+    
+    // Update topic total hours
+    updateTopicTotal(subjectId, topicName);
+    
+    // Update topic status based on hours
+    updateTopicStatusBasedOnHours(subjectId, topicName, userProgress.subjects[subjectId].topics[topicName].totalHours || 0);
+    
+    // Update completed topics count
+    updateCompletedTopics(subjectId);
+    
+    // Save the updated progress
+    await DataStorage.manualSave('progress', userProgress, (success) => {
+        if (success) {
+            console.log(`Updated subtopic "${subtopicName}" from ${currentHours} to ${newTotalHours} hours (added ${targetHours} hours).`);
+            
+            // Update the Subjects page UI if it's currently active
+            if (currentPage === 'subjects') {
+                loadSubjectContent();
             }
             
-            const subjectId = target.subject;
-            const topicName = target.topic;
-            const subtopicName = target.subtopic;
-            const actualHours = target.actualHours || 0;
-            
-            // Find the subject in syllabus data
-            if (!syllabusData[subjectId]) {
-                console.log(`Subject ${subjectId} not found in syllabus. Skipping auto-update.`);
-                return;
+            // Also update heatmap data
+            if (targetHours > 0) {
+                const today = new Date().toISOString().split('T')[0];
+                updateHeatmapData(today, targetHours);
             }
-            
-            // Find the topic in the subject
-            const subject = syllabusData[subjectId];
-            const topic = subject.topics.find(t => t.name === topicName);
-            
-            if (!topic) {
-                console.log(`Topic "${topicName}" not found in subject ${subjectId}. Skipping auto-update.`);
-                return;
-            }
-            
-            // Find the subtopic in the topic
-            const subtopic = topic.subtopics.find(st => st.name === subtopicName);
-            
-            if (!subtopic) {
-                console.log(`Subtopic "${subtopicName}" not found in topic "${topicName}". Skipping auto-update.`);
-                return;
-            }
-            
-            // Initialize progress structure if it doesn't exist
-            if (!userProgress.subjects[subjectId]) {
-                userProgress.subjects[subjectId] = { 
-                    topics: {}, 
-                    completedTopics: 0, 
-                    totalTopics: syllabusData[subjectId].topics.length 
-                };
-            }
-            
-            if (!userProgress.subjects[subjectId].topics[topicName]) {
-                userProgress.subjects[subjectId].topics[topicName] = { 
-                    status: 'not-started', 
-                    totalHours: 0,
-                    subtopics: {} 
-                };
-            }
-            
-            if (!userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName]) {
-                userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName] = { 
-                    actualHours: 0, 
-                    completed: false,
-                    lastUpdated: null
-                };
-            }
-            
-           // Update the subtopic by ADDING actual hours from the target (not replacing)
-const currentHours = userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours || 0;
-userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].actualHours = currentHours + hours;
-userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].completed = (currentHours + hours) > 0;
-            userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].lastUpdated = new Date().toISOString();
-            userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].autoUpdated = true; // Mark as auto-updated
-            
-            // Update topic total hours
-            updateTopicTotal(subjectId, topicName);
-            
-            // Update topic status based on hours
-            updateTopicStatusBasedOnHours(subjectId, topicName, userProgress.subjects[subjectId].topics[topicName].totalHours || 0);
-            
-            // Update completed topics count
-            updateCompletedTopics(subjectId);
-            
-            // Save the updated progress
-            await DataStorage.manualSave('progress', userProgress, (success) => {
-                if (success) {
-                    console.log(`Updated subtopic "${subtopicName}" with ${actualHours} hours from completed target.`);
-                    
-                    // Update the Subjects page UI if it's currently active
-                    if (currentPage === 'subjects') {
-                        loadSubjectContent();
-                    }
-                }
-            });
         }
+    });
+}
         
         // Helper function to check if a target matches syllabus structure
         function doesTargetMatchSyllabus(target) {
@@ -6690,7 +6716,10 @@ userProgress.subjects[subjectId].topics[topicName].subtopics[subtopicName].compl
             
             return true;
         }
-        
+        // Helper function to check if target should be saved to history
+function shouldSaveToHistory(target) {
+    return target.completed && target.actualHours > 0 && target.subject && target.topic;
+}
         function loadTargetHistory() {
             const historyTbody = document.getElementById('history-tbody');
             const searchTerm = document.getElementById('search-history').value.toLowerCase();
