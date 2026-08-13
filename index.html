@@ -3293,6 +3293,26 @@
             </div>
         </footer>
     </div>
+    <!-- New User MCQ Welcome Modal -->
+    <div class="modal" id="mcq-welcome-modal">
+        <div class="modal-content" style="border-top: 5px solid var(--secondary);">
+            <div class="modal-header">
+                <h3><i class="fas fa-rocket"></i> Boost Your Prep!</h3>
+                <button class="modal-close" id="mcq-welcome-close">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <i class="fas fa-list-ol" style="font-size: 48px; color: var(--secondary); margin-bottom: 20px;"></i>
+                <h4>Practice MCQs (CA Latest Syllabus)</h4>
+                <p style="color: var(--gray); margin-bottom: 25px;">As a new user, we highly recommend integrating regular MCQ practice into your routine. Click below to practice!</p>
+                <div style="display: grid; gap: 15px; text-align: left;">
+                    <a href="https://satqm.github.io/Audit/" target="_blank" class="btn" style="background: #e8f5e9; color: #2e7d32; text-decoration: none; display: flex; justify-content: space-between;"><span style="font-weight:bold;">Audit MCQs</span> <i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://satqm.github.io/GST/" target="_blank" class="btn" style="background: #e3f2fd; color: #1565c0; text-decoration: none; display: flex; justify-content: space-between;"><span style="font-weight:bold;">GST MCQs</span> <i class="fas fa-external-link-alt"></i></a>
+                    <a href="https://satqm.github.io/QUIZ/" target="_blank" class="btn" style="background: #fff3e0; color: #e65100; text-decoration: none; display: flex; justify-content: space-between;"><span style="font-weight:bold;">Advanced ITT MCQs</span> <i class="fas fa-external-link-alt"></i></a>
+                </div>
+                <button class="btn btn-accent" id="mcq-welcome-got-it" style="margin-top: 25px; width: 100%;">Got it, Let's Start!</button>
+            </div>
+        </div>
+    </div>
     
     <!-- Delete Entries Modal -->
     <div class="modal" id="delete-modal">
@@ -4674,21 +4694,48 @@ document.getElementById('remark-select')?.addEventListener('change', function() 
     }
 });
 
-  // Add default resources if none exist
-if (userResources.length === 0) {
-    userResources = [
-        {
-            id: Date.now(),
-            title: "ICAI Study Material",
-            subject: "Genral",
-            type: "notes",
-            link: "https://boslive.icai.org/study_material_new_paper_details.php?c=final&language=English&year=Applicable%20for%20May%202026%20Exam%20Onwards",
-            author: "ICAI",
-            addedDate: new Date().toISOString()
-        }
-    ];
-    DataStorage.save('resources', userResources);
-}
+// Add default resources if none exist
+    if (userResources.length === 0) {
+        userResources = [
+            {
+                id: Date.now(),
+                title: "ICAI Study Material",
+                subject: "general",
+                type: "notes",
+                link: "https://boslive.icai.org/study_material_new_paper_details.php?c=final&language=English&year=Applicable%20for%20May%202026%20Exam%20Onwards",
+                author: "ICAI",
+                addedDate: new Date().toISOString()
+            },
+            {
+                id: Date.now() + 1,
+                title: "Audit MCQs Practice",
+                subject: "paper3",
+                type: "mcq",
+                link: "https://satqm.github.io/Audit/",
+                author: "Observe with Satyam",
+                addedDate: new Date().toISOString()
+            },
+            {
+                id: Date.now() + 2,
+                title: "GST MCQs Practice",
+                subject: "paper5",
+                type: "mcq",
+                link: "https://satqm.github.io/GST/",
+                author: "Observe with Satyam",
+                addedDate: new Date().toISOString()
+            },
+            {
+                id: Date.now() + 3,
+                title: "Advanced ITT MCQs Practice",
+                subject: "general",
+                type: "mcq",
+                link: "https://satqm.github.io/QUIZ/",
+                author: "Observe with Satyam",
+                addedDate: new Date().toISOString()
+            }
+        ];
+        DataStorage.save('resources', userResources);
+    }
 }
 
         
@@ -6289,7 +6336,7 @@ if (remark === 'custom') {
             });
         }
         
-        function loadTargets() {
+    function loadTargets() {
             const targetsList = document.getElementById('targets-list');
             const statusFilter = document.getElementById('target-status-filter').value;
             const subjectFilter = document.getElementById('target-subject-filter').value;
@@ -6302,9 +6349,7 @@ if (remark === 'custom') {
                 filteredTargets = filteredTargets.filter(t => t.completed);
             } else if (statusFilter === 'overdue') {
                 const today = new Date().toISOString().split('T')[0];
-                filteredTargets = filteredTargets.filter(t => {
-                    return t.date < today && !t.completed;
-                });
+                filteredTargets = filteredTargets.filter(t => t.date < today && !t.completed);
             }
             
             if (subjectFilter !== 'all') {
@@ -6319,11 +6364,10 @@ if (remark === 'custom') {
             let html = '';
             const today = new Date().toISOString().split('T')[0];
             
-            filteredTargets.forEach((target, index) => {
+            filteredTargets.forEach((target) => {
                 const isToday = target.date === today;
                 const isOverdue = target.date < today && !target.completed;
-                const achievement = target.plannedHours > 0 ? 
-                    Math.round((target.actualHours || 0) / target.plannedHours * 100) : 0;
+                const achievement = target.plannedHours > 0 ? Math.round((target.actualHours || 0) / target.plannedHours * 100) : 0;
                 
                 let statusText = 'Active';
                 let statusColor = 'var(--secondary)';
@@ -6343,18 +6387,18 @@ if (remark === 'custom') {
                     statusIcon = 'fa-calendar-day';
                 }
                 
-                html += `<div class="target-item" data-index="${index}">
+                html += `<div class="target-item" data-id="${target.id}">
                     <div class="target-header">
                         <div class="target-title">${target.topic}${target.subtopic ? `: ${target.subtopic}` : ''}</div>
                         <span class="target-subject">${getSubjectName(target.subject)}</span>
                     </div>
                    <div class="target-details">
-    <div><strong>Date:</strong> ${formatDate(target.date)}</div>
-    <div><strong>Remark:</strong> ${target.remark || 'General'}</div>
-    <div style="color: ${statusColor}; font-weight: 600;">
-        <i class="fas ${statusIcon}"></i> ${statusText}
-    </div>
-</div>
+                        <div><strong>Date:</strong> ${formatDate(target.date)}</div>
+                        <div><strong>Remark:</strong> ${target.remark || 'General'}</div>
+                        <div style="color: ${statusColor}; font-weight: 600;">
+                            <i class="fas ${statusIcon}"></i> ${statusText}
+                        </div>
+                    </div>
                     <div class="target-time">
                         <div class="target-planned">
                             <strong>Planned:</strong> ${target.plannedHours} hrs
@@ -6384,16 +6428,16 @@ if (remark === 'custom') {
                             <span>Achievement: ${achievement}%</span>
                         </div>
                         <div class="target-actions">
-                                               <button class="complete-target-btn" style="padding: 8px 16px; background: ${target.actualHours >= target.plannedHours ? 'var(--success)' : 'var(--warning)'}; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas ${target.actualHours >= target.plannedHours ? 'fa-check-circle' : 'fa-clock'}"></i>
-                            ${target.actualHours >= target.plannedHours ? 'Mark Complete' : 'Mark Partial Complete'}
-                        </button>
-                        ${target.subtopic ? `
-                        <button class="auto-update-subtopic-btn" style="padding: 8px 16px; background: var(--secondary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-sync-alt"></i>
-                            Update Subtopic
-                        </button>
-                        ` : ''}
+                            <button class="complete-target-btn" style="padding: 8px 16px; background: ${target.actualHours >= target.plannedHours ? 'var(--success)' : 'var(--warning)'}; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas ${target.actualHours >= target.plannedHours ? 'fa-check-circle' : 'fa-clock'}"></i>
+                                ${target.actualHours >= target.plannedHours ? 'Mark Complete' : 'Mark Partial Complete'}
+                            </button>
+                            ${target.subtopic ? `
+                            <button class="auto-update-subtopic-btn" style="padding: 8px 16px; background: var(--secondary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-sync-alt"></i>
+                                Update Subtopic
+                            </button>
+                            ` : ''}
                             <button class="delete-target-btn" style="padding: 8px 16px; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
                                 <i class="fas fa-trash"></i> Delete
                             </button>
@@ -6404,210 +6448,148 @@ if (remark === 'custom') {
             
             targetsList.innerHTML = html;
             
-            document.querySelectorAll('.save-target-hours-btn').forEach((btn, index) => {
-    btn.addEventListener('click', async function() {
-        const targetItem = this.closest('.target-item');
-        const targetIndex = targetItem.getAttribute('data-index');
-        const input = this.parentElement.querySelector('.actual-hours-input');
-        const hours = parseFloat(input.value) || 0;
-        
-        // Temporarily change button to show saving
-        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-        this.disabled = true;
-        
-        try {
-            await updateTargetHours(targetIndex, hours);
-            
-            // Restore button
-            this.innerHTML = 'Save';
-            this.disabled = false;
-            
-            // Update remark summary if available
-            if (typeof updateRemarkSummary === 'function') {
-                updateRemarkSummary();
-            }
-        } catch (error) {
-            console.error('Error saving target hours:', error);
-            this.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error';
-            setTimeout(() => {
-                this.innerHTML = 'Save';
-                this.disabled = false;
-            }, 2000);
-        }
-    });
-});
-            
-                    document.querySelectorAll('.complete-target-btn').forEach((btn, index) => {
+            document.querySelectorAll('.save-target-hours-btn').forEach((btn) => {
                 btn.addEventListener('click', async function() {
-                    const targetIndex = this.closest('.target-item').getAttribute('data-index');
-                    await completeTarget(targetIndex);
-                });
-            });
-            
-          // Add event listeners for auto-update subtopic buttons
-document.querySelectorAll('.auto-update-subtopic-btn').forEach((btn, index) => {
-    btn.addEventListener('click', async function() {
-        const targetItem = this.closest('.target-item');
-        const targetIndex = targetItem.getAttribute('data-index');
-        const target = userTargets[targetIndex];
-        
-        if (target && target.subtopic) {
-            // Get the current actual hours from the input field
-            const actualHoursInput = targetItem.querySelector('.actual-hours-input');
-            const hours = parseFloat(actualHoursInput.value) || 0;
-            
-            // Update target's actual hours
-            target.actualHours = hours;
-            
-            // Temporarily change button to show updating
-            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
-            this.disabled = true;
-            
-            try {
-                // Save the updated target first
-                await DataStorage.manualSave('targets', userTargets);
-                
-                // Now update the subtopic
-                await updateSubtopicFromCompletedTarget(target);
-                
-                // Update the UI
-                loadTargets();
-                loadTargetHistory();
-                updateDashboard();
-                updateRemarkSummary();
-                
-                // Restore button
-                this.innerHTML = '<i class="fas fa-check"></i> Updated!';
-                setTimeout(() => {
-                    this.innerHTML = '<i class="fas fa-sync-alt"></i> Update Subtopic';
-                    this.disabled = false;
-                }, 2000);
-                
-                showToast(`Subtopic "${target.subtopic}" updated with ${hours} hours`, 'success');
-            } catch (error) {
-                console.error('Error updating subtopic:', error);
-                this.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error';
-                this.disabled = false;
-                showToast('Error updating subtopic', 'error');
-            }
-        } else {
-            showToast('Target does not have a subtopic to update', 'warning');
-        }
-    });
-});
-            
-   async function completeTarget(index) {
-    if (index >= 0 && index < userTargets.length) {
-        const target = userTargets[index];
-
-        // Mark as completed
-        target.completed = true;
-        target.status = 'completed';
-        target.completedDate = new Date().toISOString();
-
-        // Auto-update the corresponding subtopic in Subjects tab
-        if (target.autoUpdateSubtopic !== false && target.subtopic && 
-            target.subject && target.topic && target.actualHours > 0) {
-            await updateSubtopicFromCompletedTarget(target);
-        }
-
-        // Move target from userTargets to completedTargets
-        const completedTarget = { ...target };
-        completedTargets.push(completedTarget);
-        userTargets.splice(index, 1);
-
-        try {
-            // Save ALL changes to IndexedDB
-            await DataStorage.manualSave('targets', userTargets);
-            await DataStorage.manualSave('completedTargets', completedTargets);
-
-            // Update UI
-            loadTargets();
-            loadTargetHistory();  // Refresh history
-            updateDashboard();
-            updateRemarkSummary(); // Refresh remark summary
-
-            showToast('Target marked as complete! Subtopic updated in Subjects tab.', 'success');
-        } catch (error) {
-            console.error('Error saving completed target:', error);
-            showToast('Error saving completed target. Please try again.', 'error');
-        }
-    }
-}
-
-            // Add event listeners for auto-update subtopic buttons
-            document.querySelectorAll('.auto-update-subtopic-btn').forEach((btn, index) => {
-                btn.addEventListener('click', async function() {
-                    const targetIndex = this.closest('.target-item').getAttribute('data-index');
-                    const target = userTargets[targetIndex];
+                    const targetItem = this.closest('.target-item');
+                    const targetId = parseInt(targetItem.getAttribute('data-id'));
+                    const input = targetItem.querySelector('.actual-hours-input');
+                    const hours = parseFloat(input.value) || 0;
                     
-                    if (target && target.subtopic) {
-                        // Temporarily change button to show updating
-                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
-                        this.disabled = true;
-                        
-                        // Update the subtopic without completing the target
-                        await updateSubtopicFromCompletedTarget(target);
-                        
-                        // Restore button
-                        this.innerHTML = '<i class="fas fa-check"></i> Updated!';
-                        setTimeout(() => {
-                            this.innerHTML = '<i class="fas fa-sync-alt"></i> Update Subtopic';
-                            this.disabled = false;
-                        }, 2000);
-                        
-                        showToast(`Subtopic "${target.subtopic}" updated with ${target.actualHours || 0} hours`, 'success');
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                    this.disabled = true;
+                    
+                    try {
+                        await updateTargetHours(targetId, hours);
+                        this.innerHTML = 'Save';
+                        this.disabled = false;
+                        if (typeof updateRemarkSummary === 'function') updateRemarkSummary();
+                    } catch (error) {
+                        this.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error';
+                        setTimeout(() => { this.innerHTML = 'Save'; this.disabled = false; }, 2000);
                     }
                 });
             });
             
-            document.querySelectorAll('.delete-target-btn').forEach((btn, index) => {
+            document.querySelectorAll('.complete-target-btn').forEach((btn) => {
+                btn.addEventListener('click', async function() {
+                    const targetItem = this.closest('.target-item');
+                    const targetId = parseInt(targetItem.getAttribute('data-id'));
+                    
+                    const input = targetItem.querySelector('.actual-hours-input');
+                    const hours = parseFloat(input.value) || 0;
+                    await updateTargetHours(targetId, hours);
+                    await completeTarget(targetId);
+                });
+            });
+            
+            document.querySelectorAll('.auto-update-subtopic-btn').forEach((btn) => {
+                btn.addEventListener('click', async function() {
+                    const targetItem = this.closest('.target-item');
+                    const targetId = parseInt(targetItem.getAttribute('data-id'));
+                    const target = userTargets.find(t => t.id === targetId);
+                    
+                    if (target && target.subtopic) {
+                        const actualHoursInput = targetItem.querySelector('.actual-hours-input');
+                        const hours = parseFloat(actualHoursInput.value) || 0;
+                        target.actualHours = hours; 
+                        
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+                        this.disabled = true;
+                        
+                        try {
+                            await DataStorage.manualSave('targets', userTargets);
+                            await updateSubtopicFromCompletedTarget(target);
+                            
+                            loadTargets(); loadTargetHistory(); updateDashboard(); 
+                            if (typeof updateRemarkSummary === 'function') updateRemarkSummary();
+                            this.innerHTML = '<i class="fas fa-check"></i> Updated!';
+                            setTimeout(() => { this.innerHTML = '<i class="fas fa-sync-alt"></i> Update Subtopic'; this.disabled = false; }, 2000);
+                        } catch (error) {
+                            this.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error';
+                            this.disabled = false;
+                        }
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.delete-target-btn').forEach((btn) => {
                 btn.addEventListener('click', function() {
-                    const targetIndex = this.closest('.target-item').getAttribute('data-index');
-                    deleteTarget(targetIndex);
+                    const targetId = parseInt(this.closest('.target-item').getAttribute('data-id'));
+                    deleteTarget(targetId);
                 });
             });
         }
-        
-         async function updateTargetHours(index, hours) {
-    if (index >= 0 && index < userTargets.length) {
-        const target = userTargets[index];
-        const previousHours = target.actualHours || 0;
-        target.actualHours = hours;
-        
-        if (hours >= target.plannedHours) {
-            target.completed = true;
-            target.status = 'completed';
-        }
-        
-        // Update heatmap data
-        if (hours !== previousHours) {
-            await updateHeatmapData(target.date, hours - previousHours);
-        }
-        
-        await DataStorage.manualSave('targets', userTargets, (success) => {
-            if (success) {
-                loadTargets();
-                updateDashboard();
-            }
-        });
-    }
-}
 
-// Fix the incomplete deleteTarget function
-async function deleteTarget(index) {
-    if (confirm('Are you sure you want to delete this target?')) {
-        if (index >= 0 && index < userTargets.length) {
-            userTargets.splice(index, 1);
-            await DataStorage.manualSave('targets', userTargets, (success) => {
-                if (success) {
-                    loadTargets();
-                    updateDashboard();
+        async function updateTargetHours(id, hours) {
+            const index = userTargets.findIndex(t => t.id === id);
+            if (index !== -1) {
+                const target = userTargets[index];
+                const previousHours = target.actualHours || 0;
+                target.actualHours = hours;
+                
+                if (hours > 0 && hours >= target.plannedHours) {
+                    target.completed = true;
+                    target.status = 'completed';
                 }
-            });
+                
+                if (hours !== previousHours) {
+                    await updateHeatmapData(target.date, hours - previousHours);
+                }
+                
+                await DataStorage.manualSave('targets', userTargets, (success) => {
+                    if (success) { loadTargets(); updateDashboard(); }
+                });
+            }
         }
-    }
-}   
+
+        async function completeTarget(id) {
+            const index = userTargets.findIndex(t => t.id === id);
+            if (index !== -1) {
+                const target = userTargets[index];
+
+                if ((target.actualHours || 0) === 0) {
+                     const proceed = confirm("Hours are currently 0. Do you want to mark this complete with 0 hours achieved? (Type hours in the box first to save them!)");
+                     if(!proceed) return;
+                }
+
+                target.completed = true;
+                target.status = 'completed';
+                target.completedDate = new Date().toISOString();
+
+                if (target.autoUpdateSubtopic !== false && target.subtopic && 
+                    target.subject && target.topic && target.actualHours > 0) {
+                    await updateSubtopicFromCompletedTarget(target);
+                }
+
+                const completedTarget = { ...target };
+                completedTargets.push(completedTarget);
+                userTargets.splice(index, 1);
+
+                try {
+                    await DataStorage.manualSave('targets', userTargets);
+                    await DataStorage.manualSave('completedTargets', completedTargets);
+
+                    loadTargets();
+                    loadTargetHistory(); 
+                    updateDashboard();
+                    if (typeof updateRemarkSummary === 'function') updateRemarkSummary();
+                } catch (error) {
+                    console.error('Error saving completed target.');
+                }
+            }
+        }
+
+        async function deleteTarget(id) {
+            if (confirm('Are you sure you want to delete this target?')) {
+                const index = userTargets.findIndex(t => t.id === id);
+                if (index !== -1) {
+                    userTargets.splice(index, 1);
+                    await DataStorage.manualSave('targets', userTargets, (success) => {
+                        if (success) { loadTargets(); updateDashboard(); }
+                    });
+                }
+            }
+        }
 async function updateSubtopicFromCompletedTarget(target) {
     // Only update if the target has subject, topic, and subtopic
     if (!target.subject || !target.topic || !target.subtopic) {
